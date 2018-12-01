@@ -20,10 +20,15 @@ FILE* stderr
 2>&1
 ```
 在重定向前，是这样的：
+
 ![8bbdb068-98af-4e16-ac68-13f6b9f14d52.png](linux I-O重定向_files/8bbdb068-98af-4e16-ac68-13f6b9f14d52.png)
+
 重定向之后，是这样的：
+
 ![61d2f081-841b-4faf-bac5-861ef904c67e.png](linux I-O重定向_files/61d2f081-841b-4faf-bac5-861ef904c67e.png)
+
 这是因为`2>&1`是通过`dup2()`这个系统调用实现的。
+
 **int dup2(int oldfd, int newfd); **:
 ```
 dup2() create a copy of the file descriptor oldfd. After a successful return from dup() or dup2(), the old and new file descriptors may be used interchangeably. They refer to the same open file description (see open(2)) and thus share file offset and file status flags; for example, if the file offset is modified by using lseek(2) on one of the descriptors, the offset is also changed for the other.
