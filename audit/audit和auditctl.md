@@ -38,7 +38,7 @@ gfp_t gfp_mask;//缓存区的标识，如：__GFP_WAIT
 这个函数是一个消息分发处理器，根据数据报头部的`nlmsg_type`进行分发处理，流程如下：
 1. 获取到消息类型
 2. 通过`audit_netlink_ok`检测消息类型是否合法，不合法则退出
-3. 检查`kauditd`内核线程是否启动，煤气洞则通过`kthread_run()`启动该线程，此线程用于从`audit_skb_queue`发送消息
+3. 检查`kauditd`内核线程是否启动，未启动则通过`kthread_run()`启动该线程，此线程用于从`audit_skb_queue`发送消息
 4. 根据当套接字缓冲区skb和当前进程获取审计所需的数据，如pid，uid等
 5. 根据消息类型进行消息分发和处理
 
