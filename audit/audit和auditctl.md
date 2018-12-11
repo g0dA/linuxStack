@@ -11,3 +11,7 @@
 
 ## 主要目的
 尽量少的消耗性能监控到系统调用以及各种安全事件，从而提供溯源追踪的能力。
+
+## 参考文档
+* [linux服务之audit](https://www.cnblogs.com/createyuan/p/3861149.html)
+* [Linux 用户空间审计工具 audit](https://www.ibm.com/developerworks/cn/linux/l-lo-use-space-audit-tool/index.html)
