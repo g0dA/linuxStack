@@ -27,18 +27,19 @@ struct audit_context *ctx;
 gfp_t gfp_mask;//缓存区的标识，如：__GFP_WAIT
 };
 ```
-![2a6108b4011f4060a40e80136f352593_th.jpeg](http://img.mp.itc.cn/upload/20160917/2a6108b4011f4060a40e80136f352593_th.jpeg)
+![b7cca361-af4e-4833-acce-a98b23462aaa.jpg](audit和auditctl_files/b7cca361-af4e-4833-acce-a98b23462aaa.jpg)
 
 `audit_receive()`函数的实现
 这个函数封装了`audit_receive_skb`，实现过程：
 1. 受限依照`netlink`协议获取数据报头和数据报文长度，给`audit_receive_msg`处理
 2. 数据包处理完成，则通过`netlink_ack`向用户态发送响应
 3. 获取下一个数据
+
 `audit_receive_msg`：
 这个函数是一个消息分发处理器，根据数据报头部的`nlmsg_type`进行分发处理，流程如下：
 1. 获取到消息类型
 2. 通过`audit_netlink_ok`检测消息类型是否合法，不合法则退出
-3. 检查`kauditd`内核线程是否启动，未启动则通过`kthread_run()`启动该线程，此线程用于从`audit_skb_queue`发送消息
+3. 检查`kauditd`内核线程是否启动，没启动则通过`kthread_run()`启动该线程，此线程用于从`audit_skb_queue`发送消息
 4. 根据当套接字缓冲区skb和当前进程获取审计所需的数据，如pid，uid等
 5. 根据消息类型进行消息分发和处理
 
@@ -79,5 +80,22 @@ struct list_headrlist;　
 /*在audit_watch.rules链表上的入口 */
 };
 ```
-`audit`会接收所有的消息，按照规则输出符合规则的消息，而不符合的则被过滤掉
+`audit`会接收所有的消息，按照规则输出符合规则的消息，而不符合的则被过滤掉，查看审计消息是否复合规则，是通过将审计消息的域和规则域进行运算匹配完成的，规则域支持六种运算：
+* 等于
+* 不等于
+* 小于
+* 大于
+* 小于或等于
+* 大于或等于
+```
+//规则域
+struct audit_field {
+u32type; /* 域的类型，比如AUDIT_PID*/
+u32val; /*用于和审计消息的相关信息比较的值,如:510*/
+u32op; /*操作符号定义,如:等于*/
+char*lsm_str;
+void*lsm_rule;
+};
+```
+> 进程的审计包括系统调用的审计和一些内核函数的审计。系统调用的审计是在系统调用的入口和出口处加上审计函数,内核函数的审计是在函数内部的审计点加上审计hook 函数,这些审计函数将需要截获的消息通过规则过滤后,填充到审计上下文,在系统调用退出时,进程将审计上下文发送给审计后台。
 
