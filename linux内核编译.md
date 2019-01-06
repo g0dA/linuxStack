@@ -49,13 +49,10 @@ make mrproper
 make clean
 ```
 先执行下净化下原始源码。
-复制当前配置，然后通过`menuconfig`来修改，或者手动配置也行
+接着执行
 ```
-cp /boot/config-$(uname -r) .config
-```
-执行
-```
-make menuconfig 
+make menuconfig
+make defconfig 
 ```
 这儿到底该怎么配，建议看[鸟哥linux私房菜](https://doc.plob.org/vbird_linux/linux/linux_basic/0540kernel.htm)
 
