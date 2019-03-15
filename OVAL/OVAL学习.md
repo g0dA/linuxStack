@@ -24,7 +24,9 @@ OVAL系统特性格式用于描述系统信息照，用来与OVAL定义文件进
 这个是最重要的构成元素，它会引用一个或多个“测试”，根据“测试”的结果综合判定整体的结果。
 
 如图：
+
 ![OVAL定义层次结构](http://www.youxia.org/wp-content/uploads/2013/05/6ad9fd5e196223e1944cce435df16a05.png?imageView2/2/w/1200/interlace/1|watermark/1/image/aHR0cDovL3d3dy55b3V4aWEub3JnL3dwLWNvbnRlbnQvdXBsb2Fkcy8yMDE1LzExL0xPR08uZndfLnBuZw==/dissolve/100/gravity/NorthEast/dx/10/dy/10#)
+
 对于Definition1来说，只有Test1与Test2都为True，才能为True
 
 `定义`用于描述如何对某一个特定的安全问题进行检查，通常一个OVAL文档中包含了多个定义，主要有四类：
@@ -35,12 +37,16 @@ OVAL系统特性格式用于描述系统信息照，用来与OVAL定义文件进
 
 定义示例：
 表1 “OVAL定义”示例数据
+
 ![](OVAL学习_files/e11398e6-36d6-4587-81c7-cba68c361073.png)
 
 ### 测试(Test)
 通过定义一组OVAL对象(Object)和状态(State)执行
+
 ![](OVAL学习_files/9e4c2c5b-54b0-48cc-9ea9-a8b874ddd081.png)
+
 例子：windows和RedHat下的测试类型
+
 ![](OVAL学习_files/8dd77cd0-d38c-4622-b7c5-ebb144b636ca.png)
 
 ### 对象(Object)
