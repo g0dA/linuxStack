@@ -1,0 +1,59 @@
+0x7fffffffe008 => AB  hhn
+0x7fffffffe009 => EB5F hn
+
+1
+%160c%15$hhnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\xe8\xdb\xff\xff\xff\x7f
+%160c%15$lxaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa000000
+
+
+0x7fffffffdbd0:	0x3531256330363125	0x61616161786c245c
+0x7fffffffdbe0:	0x6161616161616161	0x6161616161616161
+0x7fffffffdbf0:	0x6161616161616161	0x6161616161616161
+0x7fffffffdc00:	0x6161616161616161	0x6161616161616161
+0x7fffffffdc10:	0x6161616161616161	0x303030303030
+
+
+2
+%160c%15$hhnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+%160c%15$lxaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
+0x7fffffffdbd0:	0x3531256330363125	0x61616161786c245c
+0x7fffffffdbe0:	0x6161616161616161	0x6161616161616161
+0x7fffffffdbf0:	0x6161616161616161	0x6161616161616161
+0x7fffffffdc00:	0x6161616161616161	0x6161616161616161
+0x7fffffffdc10:	0x61616161616161	0x303030303030
+
+
+3
+%160c%15$hhnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\x08\xe0\xff\xff\xff\x7f
+%160c%14$lxaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa111111
+
+0x7fffffffdbd0:	0x3531256330363125	0x61616161786c245c
+0x7fffffffdbe0:	0x6161616161616161	0x6161616161616161
+0x7fffffffdbf0:	0x6161616161616161	0x6161616161616161
+0x7fffffffdc00:	0x6161616161616161	0x6161616161616161
+0x7fffffffdc10:	0x313131313131	0x303030303030
+
+4
+%160c%15$hhnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+%160c%15$lxaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
+x7fffffffdbd0:	0x3531256330363125	0x61616161786c245c
+0x7fffffffdbe0:	0x6161616161616161	0x6161616161616161
+0x7fffffffdbf0:	0x6161616161616161	0x6161616161616161
+0x7fffffffdc00:	0x6161616161616161	0x61616161616161
+0x7fffffffdc10:	0x313131313131	0x303030303030
+
+5
+%160c%15$hhnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\x09\xe0\xff\xff\xff\x7f  <= 有问题，就是\x09-\x0d都是有意义字符导致出问题
+%160c%13$lxaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa222222
+
+0x7fffffffdbd0:	0x3531256330363125	0x61616161786c245c
+0x7fffffffdbe0:	0x6161616161616161	0x6161616161616161
+0x7fffffffdbf0:	0x6161616161616161	0x6161616161616161
+0x7fffffffdc00:	0x6161616161616161	0x323232323232
+0x7fffffffdc10:	0x313131313131	0x303030303030
+
+6
+%171c%14$hhn%60084c%13$hn
+%15$lx.%14$lx.%13$lx

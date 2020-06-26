@@ -1,0 +1,207 @@
+struct mm_struct {
+  mmap = 0xffff8800734c2960, 
+  mm_rb = {
+    rb_node = 0xffff8800734c2598
+  }, 
+  vmacache_seqnum = 4, 
+  get_unmapped_area = 0xffffffff81033e57 <arch_get_unmapped_area_topdown>, 
+  mmap_base = 140278187479040, 
+  mmap_legacy_base = 47354607689728, 
+  mmap_compat_base = 4160655360, 
+  mmap_compat_legacy_base = 1431740416, 
+  task_size = 140737488351232, 
+  highest_vm_end = 140725240967168, 
+  pgd = 0xffff88008f99e000, 
+  mm_users = {
+    counter = 1
+  }, 
+  mm_count = {
+    counter = 1
+  }, 
+  pgtables_bytes = {
+    counter = 53248
+  }, 
+  map_count = 18, 
+  page_table_lock = {
+    {
+      rlock = {
+        raw_lock = {
+          val = {
+            counter = 0
+          }
+        }
+      }
+    }
+  }, 
+  mmap_sem = {
+    count = {
+      counter = 0
+    }, 
+    wait_list = {
+      next = 0xffff88008f8452f8, 
+      prev = 0xffff88008f8452f8
+    }, 
+    wait_lock = {
+      raw_lock = {
+        val = {
+          counter = 0
+        }
+      }
+    }, 
+    osq = {
+      tail = {
+        counter = 0
+      }
+    }, 
+    owner = 0x1
+  }, 
+  mmlist = {
+    next = 0xffff88008f845318, 
+    prev = 0xffff88008f845318
+  }, 
+  hiwater_rss = 68, 
+  hiwater_vm = 1077, 
+  total_vm = 1092, 
+  locked_vm = 0, 
+  pinned_vm = 0, 
+  data_vm = 50, 
+  exec_vm = 488, 
+  stack_vm = 33, 
+  def_flags = 0, 
+  start_code = 4194304, 
+  end_code = 4196388, 
+  start_data = 6295056, 
+  end_data = 6295620, 
+  start_brk = 38236160, 
+  brk = 38375424, 
+  start_stack = 140725240656416, 
+  arg_start = 140725240660579, 
+  arg_end = 140725240660587, 
+  env_start = 140725240660587, 
+  env_end = 140725240664048, 
+  saved_auxv = {33, 140725240958976, 16, 262929407, 6, 4096, 17, 100, 3, 4194368, 4, 56, 5, 9, 7, 140278185234432, 8, 0, 9, 4195536, 11, 1000, 12, 1000, 13, 0, 14, 0, 23, 0, 25, 140725240657225, 26, 0, 31, 140725240664048, 15, 140725240657241, 0, 0, 0, 0, 0, 0, 0, 0}, 
+  rss_stat = {
+    count = {{
+        counter = 137
+      }, {
+        counter = 19
+      }, {
+        counter = 0
+      }, {
+        counter = 0
+      }}
+  }, 
+  binfmt = 0xffffffff82332460 <elf_format>, 
+  cpu_vm_mask_var = 0xffff88008f845630, 
+  context = {
+    ctx_id = 14059, 
+    tlb_gen = {
+      counter = 11
+    }, 
+    ldt_usr_sem = {
+      count = {
+        counter = 0
+      }, 
+      wait_list = {
+        next = 0xffff88008f845580, 
+        prev = 0xffff88008f845580
+      }, 
+      wait_lock = {
+        raw_lock = {
+          val = {
+            counter = 0
+          }
+        }
+      }, 
+      osq = {
+        tail = {
+          counter = 0
+        }
+      }, 
+      owner = 0x0
+    }, 
+    ldt = 0x0, 
+    ia32_compat = 0, 
+    lock = {
+      owner = {
+        counter = 0
+      }, 
+      wait_lock = {
+        {
+          rlock = {
+            raw_lock = {
+              val = {
+                counter = 0
+              }
+            }
+          }
+        }
+      }, 
+      osq = {
+        tail = {
+          counter = 0
+        }
+      }, 
+      wait_list = {
+        next = 0xffff88008f8455c0, 
+        prev = 0xffff88008f8455c0
+      }
+    }, 
+    vdso = 0x7ffd25ff9000, 
+    vdso_image = 0xffffffff81e00c80 <vdso_image_64>, 
+    perf_rdpmc_allowed = {
+      counter = 0
+    }, 
+    pkey_allocation_map = 0, 
+    execute_only_pkey = 0, 
+    bd_addr = 0xffffffffffffffff
+  }, 
+  flags = 205, 
+  core_state = 0x0, 
+  membarrier_state = {
+    counter = 0
+  }, 
+  ioctx_lock = {
+    {
+      rlock = {
+        raw_lock = {
+          val = {
+            counter = 0
+          }
+        }
+      }
+    }
+  }, 
+  ioctx_table = 0x0, 
+  owner = 0xffff88012bc52e80, 
+  user_ns = 0xffffffff82252f60 <init_user_ns>, 
+  exe_file = 0xffff8800a077cc00, 
+  mmu_notifier_mm = 0x0, 
+  cpumask_allocation = {
+    bits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+  }, 
+  numa_next_scan = 0, 
+  numa_scan_offset = 0, 
+  numa_scan_seq = 0, 
+  tlb_flush_pending = {
+    counter = 0
+  }, 
+  tlb_flush_batched = false, 
+  uprobes_state = {
+    xol_area = 0x0
+  }, 
+  hugetlb_usage = {
+    counter = 0
+  }, 
+  async_put_work = {
+    data = {
+      counter = 0
+    }, 
+    entry = {
+      next = 0x0, 
+      prev = 0x0
+    }, 
+    func = 0x0
+  }, 
+  hmm = 0x0
+}
