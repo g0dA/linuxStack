@@ -22,9 +22,11 @@ int main(int argc, char *argv[])
 }
 ```
 一个很简单的逻辑，但是其输出却比不如我所想：
+
 | 理想 | 现实 |
 | --- | --- |
 | start:<br>count1 = 1<br>count2 = 1<br>count1 = 2<br>count2 = 2<br>count1 = 3<br>count2 = 3<br>count1 = 4<br>count2 = 4<br>count1 = 5<br>count2 = 5<br>count1 = 6<br>count2 = 6<br>count1 = 7<br>count2 = 7<br>count1 = 8<br>count2 = 8<br>count1 = 9<br>count2 = 9<br>count1 = 10<br>count2 = 10 | start:<br>count1 = 1<br>count2 = 1<br>count1 = 2<br>count2 = 3<br>count1 = 3<br>count1 = 4<br>count2 = 4<br>count2 = 4<br>count1 = 5<br>count2 = 5<br>count1 = 6<br>count2 = 6<br>count1 = 7<br>count2 = 8<br>count1 = 8<br>count2 = 9<br>count1 = 9<br>count2 = 9<br>count1 = 10<br>count2 = 10 |
+
 并且真实的输出并非一定，但是可以清晰的看到`count2 = 2`消失了，可以这样理解，就是当前一个线程的`count2`去取`count`的值的时候，正好被另外线程的`count += 1`给刷成了新的数字，可以通过加入`sleep`来放大这种影响：
 ```
     printf("count1 = %d\n", count);
