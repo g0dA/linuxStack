@@ -32,13 +32,7 @@
 
 
 这儿我实际挺晕的，因为非常多的资料都在这儿就已经提到了`Namespace`，但是我翻完了`The UNIX TimeSharing System (1974)`都没有在初期的设计中找到关于`Namespace`的说法，只能去翻阅多个资料，他们是这么阐述的：
-* `A Comparison of three Distributed
-
-
-File System Architectures:
-
-
-Vnode, Sprite, and Plan 9 (1994)`
+* `A Comparison of three Distributed File System Architectures:Vnode, Sprite, and Plan 9 (1994)`
 ```
 File system objects are named in a hierarchical name space that is distributed among multiple servers. 
 The name space for the UNIX file system is a hierarchy of directories and leaf nodes.
