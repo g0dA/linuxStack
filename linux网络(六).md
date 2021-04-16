@@ -52,8 +52,17 @@ rxdr->desc = dma_alloc_coherent(&pdev->dev, rxdr->size, &rxdr->dma,
 
 
 ![31ceb0b7-b070-43b3-9a21-942d049b3c7a.png](linux网络(六)_files/31ceb0b7-b070-43b3-9a21-942d049b3c7a.png)
+XDP包含有三种模式：
+1. Native模式：`XDP_FLAGS_DRV_MOD`默认的工作模式，XDP作为网驱的hook调用，这个模式需要驱动支持，支持情况如下：[https://github.com/iovisor/bcc/blob/master/docs/kernel-versions.md#xdp](https://github.com/iovisor/bcc/blob/master/docs/kernel-versions.md#xdp)
+2. Offloaded模式：`XDP_FLAGS_HW_MODE`需要硬件级支持即智能网卡，数据报文的处理不依赖本机CPU而是依赖网卡本身的芯片NPU，效率最高但是一些BPF的辅助函数可能无法支持到
+3. Generic模式：`XDP_FLAGS_SKB_MODE`最低效的工作模式，作为内核模块安插在协议栈中，对驱动和硬件都无要求因此不建议使用
 
 
+通过ip link命令可以看一下当前xdp的模式：
+```
+ens33: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 xdp qdisc pfifo_fast state UP mode DEFAULT group default qlen 1000
+generic/SKB (xdpgeneric), native/driver (xdp), hardware offload (xdpoffload)
+```
 # 结语
 就结论来讲，`XDP`和`DPDK`侧重的方向其实并不相同，前者注重在于提供一个`可编程数据报文`的功能，而后者则完全侧重于高速收发数据包并提供出针对数据包广泛的逻辑功能支持，就性能来讲`XDP`确实要比`DPDK`的应用面更加广泛，但是也因为是内核态功能导致自身门槛更高，反观`DPDK`拥有更完善的生态和优越的开发环境更有`intel`背书，因此很难说会被取代掉。
 
