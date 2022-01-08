@@ -1,0 +1,286 @@
+1. 无NEG操作
+insn状态：
+$64 = {
+  code = 0x35,
+  dst_reg = 0x7,
+  src_reg = 0x0,
+  off = 0x1,
+  imm = 0x1
+}
+regs[insn->dst_reg]状态：
+$75 = {
+  type = SCALAR_VALUE,
+  off = 0x0,
+  {
+    range = 0x0,
+    map_ptr = 0x0 <fixed_percpu_data>,
+    {
+      btf = 0x0 <fixed_percpu_data>,
+      btf_id = 0x0
+    },
+    mem_size = 0x0,
+    raw = {
+      raw1 = 0x0,
+      raw2 = 0x0
+    }
+  },
+  id = 0x0,
+  ref_obj_id = 0x0,
+  var_off = {
+    value = 0x100000000,
+    mask = 0x0
+  },
+  smin_value = 0x100000000,
+  smax_value = 0x100000000,
+  umin_value = 0x100000000,
+  umax_value = 0x100000000,
+  s32_min_value = 0x0,
+  s32_max_value = 0x0,
+  u32_min_value = 0x0,
+  u32_max_value = 0x0,
+  parent = 0x0 <fixed_percpu_data>,
+  frameno = 0x0,
+  subreg_def = 0x0,
+  live = REG_LIVE_WRITTEN,
+  precise = 0x1
+}
+regs[insn->src_reg]状态：
+$66 = {
+  type = SCALAR_VALUE,
+  off = 0x0,
+  {
+    range = 0x0,
+    map_ptr = 0x0 <fixed_percpu_data>,
+    {
+      btf = 0x0 <fixed_percpu_data>,
+      btf_id = 0x0
+    },
+    mem_size = 0x0,
+    raw = {
+      raw1 = 0x0,
+      raw2 = 0x0
+    }
+  },
+  id = 0x0,
+  ref_obj_id = 0x0,
+  var_off = {
+    value = 0x1,
+    mask = 0x0
+  },
+  smin_value = 0x1,
+  smax_value = 0x1,
+  umin_value = 0x1,
+  umax_value = 0x1,
+  s32_min_value = 0x1,
+  s32_max_value = 0x1,
+  u32_min_value = 0x1,
+  u32_max_value = 0x1,
+  parent = 0x0 <fixed_percpu_data>,
+  frameno = 0x0,
+  subreg_def = 0x0,
+  live = REG_LIVE_WRITTEN,
+  precise = 0x1
+}
+regs状态:
+$68 = {
+  type = SCALAR_VALUE,
+  off = 0x0,
+  {
+    range = 0x0,
+    map_ptr = 0x0 <fixed_percpu_data>,
+    {
+      btf = 0x0 <fixed_percpu_data>,
+      btf_id = 0x0
+    },
+    mem_size = 0x0,
+    raw = {
+      raw1 = 0x0,
+      raw2 = 0x0
+    }
+  },
+  id = 0x0,
+  ref_obj_id = 0x0,
+  var_off = {
+    value = 0x1,
+    mask = 0x0
+  },
+  smin_value = 0x1,
+  smax_value = 0x1,
+  umin_value = 0x1,
+  umax_value = 0x1,
+  s32_min_value = 0x1,
+  s32_max_value = 0x1,
+  u32_min_value = 0x1,
+  u32_max_value = 0x1,
+  parent = 0x0 <fixed_percpu_data>,
+  frameno = 0x0,
+  subreg_def = 0x0,
+  live = REG_LIVE_WRITTEN,
+  precise = 0x1
+}
+堆栈：
+#0  is_branch64_taken (reg=reg@entry=0xffff888103cf1348, val=0x1, opcode=0x30) at kernel/bpf/verifier.c:6969
+#1  0xffffffff812d04f7 in is_branch_taken (reg=reg@entry=0xffff888103cf1348, val=<optimized out>, opcode=opcode@entry=0x30, is_jmp32=is_jmp32@entry=0x0) at kernel/bpf/verifier.c:7029
+#2  0xffffffff812e0206 in check_cond_jmp_op (env=env@entry=0xffff88810867c000, insn=insn@entry=0xffffc90000dfc050, insn_idx=insn_idx@entry=0xffff88810867c000) at kernel/bpf/verifier.c:7596
+#3  0xffffffff812eb26f in do_check (env=env@entry=0xffff88810867c000) at kernel/bpf/verifier.c:9678
+#4  0xffffffff812eb7b7 in do_check_common (env=env@entry=0xffff88810867c000, subprog=subprog@entry=0x0) at kernel/bpf/verifier.c:11451
+#5  0xffffffff812edd16 in do_check_main (env=0xffff88810867c000) at kernel/bpf/verifier.c:11517
+#6  bpf_check (prog=prog@entry=0xffff88810c5c7cf0, attr=attr@entry=0xffff88810c5c7e50, uattr=uattr@entry=0x7ffd57157e80) at kernel/bpf/verifier.c:12052
+#7  0xffffffff812cc3ca in bpf_prog_load (attr=attr@entry=0xffff88810c5c7e50, uattr=uattr@entry=0x7ffd57157e80) at kernel/bpf/syscall.c:2204
+#8  0xffffffff812ce7c5 in __do_sys_bpf (cmd=0x5, uattr=0x7ffd57157e80, size=0x78) at kernel/bpf/syscall.c:4382
+#9  0xffffffff81eb7113 in do_syscall_64 (nr=<optimized out>, regs=0xffff88810c5c7f58) at arch/x86/entry/common.c:46
+#10 0xffffffff8200008c in entry_SYSCALL_64 () at arch/x86/entry/entry_64.S:120
+返回结果：
+0x1
+
+2. 有NEG操作：
+insn状态:
+$58 = {
+  code = 0x35,
+  dst_reg = 0x7,
+  src_reg = 0x0,
+  off = 0x1,
+  imm = 0x1
+}
+regs[insn->dst_reg]状态：
+$59 = {
+  type = SCALAR_VALUE,
+  off = 0x0,
+  {
+    range = 0x0,
+    map_ptr = 0x0 <fixed_percpu_data>,
+    {
+      btf = 0x0 <fixed_percpu_data>,
+      btf_id = 0x0
+    },
+    mem_size = 0x0,
+    raw = {
+      raw1 = 0x0,
+      raw2 = 0x0
+    }
+  },
+  id = 0x0,
+  ref_obj_id = 0x0,
+  var_off = {
+    value = 0x0,
+    mask = 0xffffffffffffffff
+  },
+  smin_value = 0x8000000000000000,
+  smax_value = 0x7fffffffffffffff,
+  umin_value = 0x0,
+  umax_value = 0xffffffffffffffff,
+  s32_min_value = 0x80000000,
+  s32_max_value = 0x7fffffff,
+  u32_min_value = 0x0,
+  u32_max_value = 0xffffffff,
+  parent = 0x0 <fixed_percpu_data>,
+  frameno = 0x0,
+  subreg_def = 0x0,
+  live = REG_LIVE_WRITTEN,
+  precise = 0x1
+}
+regs[insn->src_reg]状态：
+$60 = {
+  type = SCALAR_VALUE,
+  off = 0x0,
+  {
+    range = 0x0,
+    map_ptr = 0x0 <fixed_percpu_data>,
+    {
+      btf = 0x0 <fixed_percpu_data>,
+      btf_id = 0x0
+    },
+    mem_size = 0x0,
+    raw = {
+      raw1 = 0x0,
+      raw2 = 0x0
+    }
+  },
+  id = 0x0,
+  ref_obj_id = 0x0,
+  var_off = {
+    value = 0x1,
+    mask = 0x0
+  },
+  smin_value = 0x1,
+  smax_value = 0x1,
+  umin_value = 0x1,
+  umax_value = 0x1,
+  s32_min_value = 0x1,
+  s32_max_value = 0x1,
+  u32_min_value = 0x1,
+  u32_max_value = 0x1,
+  parent = 0x0 <fixed_percpu_data>,
+  frameno = 0x0,
+  subreg_def = 0x0,
+  live = REG_LIVE_WRITTEN,
+  precise = 0x1
+}
+regs状态：
+$61 = {
+  type = SCALAR_VALUE,
+  off = 0x0,
+  {
+    range = 0x0,
+    map_ptr = 0x0 <fixed_percpu_data>,
+    {
+      btf = 0x0 <fixed_percpu_data>,
+      btf_id = 0x0
+    },
+    mem_size = 0x0,
+    raw = {
+      raw1 = 0x0,
+      raw2 = 0x0
+    }
+  },
+  id = 0x0,
+  ref_obj_id = 0x0,
+  var_off = {
+    value = 0x1,
+    mask = 0x0
+  },
+  smin_value = 0x1,
+  smax_value = 0x1,
+  umin_value = 0x1,
+  umax_value = 0x1,
+  s32_min_value = 0x1,
+  s32_max_value = 0x1,
+  u32_min_value = 0x1,
+  u32_max_value = 0x1,
+  parent = 0x0 <fixed_percpu_data>,
+  frameno = 0x0,
+  subreg_def = 0x0,
+  live = REG_LIVE_WRITTEN,
+  precise = 0x1
+}
+堆栈：
+#0  is_branch64_taken (reg=reg@entry=0xffff888101911348, val=0x1, opcode=0x30) at kernel/bpf/verifier.c:6969
+#1  0xffffffff812d04f7 in is_branch_taken (reg=reg@entry=0xffff888101911348, val=<optimized out>, opcode=opcode@entry=0x30, is_jmp32=is_jmp32@entry=0x0) at kernel/bpf/verifier.c:7029
+#2  0xffffffff812e0206 in check_cond_jmp_op (env=env@entry=0xffff888110904000, insn=insn@entry=0xffffc9000121b060, insn_idx=insn_idx@entry=0xffff888110904000) at kernel/bpf/verifier.c:7596
+#3  0xffffffff812eb26f in do_check (env=env@entry=0xffff888110904000) at kernel/bpf/verifier.c:9678
+#4  0xffffffff812eb7b7 in do_check_common (env=env@entry=0xffff888110904000, subprog=subprog@entry=0x0) at kernel/bpf/verifier.c:11451
+#5  0xffffffff812edd16 in do_check_main (env=0xffff888110904000) at kernel/bpf/verifier.c:11517
+#6  bpf_check (prog=prog@entry=0xffff888109d6fcf0, attr=attr@entry=0xffff888109d6fe50, uattr=uattr@entry=0x7ffdced4a070) at kernel/bpf/verifier.c:12052
+#7  0xffffffff812cc3ca in bpf_prog_load (attr=attr@entry=0xffff888109d6fe50, uattr=uattr@entry=0x7ffdced4a070) at kernel/bpf/syscall.c:2204
+#8  0xffffffff812ce7c5 in __do_sys_bpf (cmd=0x5, uattr=0x7ffdced4a070, size=0x78) at kernel/bpf/syscall.c:4382
+#9  0xffffffff81eb7113 in do_syscall_64 (nr=<optimized out>, regs=0xffff888109d6ff58) at arch/x86/entry/common.c:46
+#10 0xffffffff8200008c in entry_SYSCALL_64 () at arch/x86/entry/entry_64.S:120
+返回结果：
+-0x1
+
+结论：
+NEG的操作修改了regs[insn->dst_reg]的状态
+堆栈：
+#0  __mark_reg_unknown (env=env@entry=0xffff8881e3460000, reg=reg@entry=0xffff8881042ce348) at kernel/bpf/verifier.c:1342
+#1  0xffffffff812d5f0d in mark_reg_unknown (env=env@entry=0xffff8881e3460000, regs=regs@entry=0xffff8881042ce000, regno=regno@entry=0x7) at kernel/bpf/verifier.c:1360
+#2  0xffffffff812dbedd in check_reg_arg (env=env@entry=0xffff8881e3460000, regno=0x7, t=t@entry=DST_OP) at kernel/bpf/verifier.c:1760
+#3  0xffffffff812dc1b5 in check_alu_op (env=env@entry=0xffff8881e3460000, insn=insn@entry=0xffffc900000a8050) at kernel/bpf/verifier.c:6617
+#4  0xffffffff812eaa72 in do_check (env=env@entry=0xffff8881e3460000) at kernel/bpf/verifier.c:9480
+#5  0xffffffff812eb7b7 in do_check_common (env=env@entry=0xffff8881e3460000, subprog=subprog@entry=0x0) at kernel/bpf/verifier.c:11451
+#6  0xffffffff812edd16 in do_check_main (env=0xffff8881e3460000) at kernel/bpf/verifier.c:11517
+#7  bpf_check (prog=prog@entry=0xffff888121577cf0, attr=attr@entry=0xffff888121577e50, uattr=uattr@entry=0x7fffad0d9bb0) at kernel/bpf/verifier.c:12052
+#8  0xffffffff812cc3ca in bpf_prog_load (attr=attr@entry=0xffff888121577e50, uattr=uattr@entry=0x7fffad0d9bb0) at kernel/bpf/syscall.c:2204
+#9  0xffffffff812ce7c5 in __do_sys_bpf (cmd=0x5, uattr=0x7fffad0d9bb0, size=0x78) at kernel/bpf/syscall.c:4382
+#10 0xffffffff81eb7113 in do_syscall_64 (nr=<optimized out>, regs=0xffff888121577f58) at arch/x86/entry/common.c:46
+#11 0xffffffff8200008c in entry_SYSCALL_64 () at arch/x86/entry/entry_64.S:120
+调用BPF_NEG操作的寄存器，倘若是非指针的话则会最终调用__mark_reg_unknown刷新insn->dst_reg，变成一个初始状态寄存器从而绕过检查

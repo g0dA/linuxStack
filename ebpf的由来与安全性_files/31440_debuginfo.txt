@@ -1,0 +1,314 @@
+调用链：
+do_check => check_cond_jmp_op => reg_set_min_max => __reg_combine_64_into_32
+
+BPF_ALU64_IMM(BPF_LSH, BPF_REG_7, 32) 之后：
+$9 = {
+  type = SCALAR_VALUE,
+  off = 0x0,
+  {
+    range = 0x0,
+    map_ptr = 0x0 <fixed_percpu_data>,
+    {
+      btf = 0x0 <fixed_percpu_data>,
+      btf_id = 0x0
+    },
+    mem_size = 0x0,
+    raw = {
+      raw1 = 0x0,
+      raw2 = 0x0
+    }
+  },
+  id = 0x0,
+  ref_obj_id = 0x0,
+  var_off = {
+    value = 0x100000000,
+    mask = 0x0
+  },
+  smin_value = 0x100000000,
+  smax_value = 0x100000000,
+  umin_value = 0x100000000,
+  umax_value = 0x100000000,
+  s32_min_value = 0x0,
+  s32_max_value = 0x0,
+  u32_min_value = 0x0,
+  u32_max_value = 0x0,
+  parent = 0x0 <fixed_percpu_data>,
+  frameno = 0x0,
+  subreg_def = 0x0,
+  live = REG_LIVE_WRITTEN,
+  precise = 0x1
+}
+
+BPF_JMP_IMM(BPF_JGE, BPF_REG_7, 1, 1)中针对寄存器的变化记录:
+初始：
+$13 = {
+  type = SCALAR_VALUE,
+  off = 0x0,
+  {
+    range = 0x0,
+    map_ptr = 0x0 <fixed_percpu_data>,
+    {
+      btf = 0x0 <fixed_percpu_data>,
+      btf_id = 0x0
+    },
+    mem_size = 0x0,
+    raw = {
+      raw1 = 0x0,
+      raw2 = 0x0
+    }
+  },
+  id = 0x0,
+  ref_obj_id = 0x0,
+  var_off = {
+    value = 0x0,
+    mask = 0xffffffffffffffff
+  },
+  smin_value = 0x8000000000000000,
+  smax_value = 0x7fffffffffffffff, 
+  umin_value = 0x1,
+  umax_value = 0xffffffffffffffff,
+  s32_min_value = 0x80000000,
+  s32_max_value = 0x7fffffff,
+  u32_min_value = 0x0,
+  u32_max_value = 0xffffffff,
+  parent = 0x0 <fixed_percpu_data>,
+  frameno = 0x0,
+  subreg_def = 0x0,
+  live = REG_LIVE_WRITTEN,
+  precise = 0x1
+}
+执行后：
+$13 = {
+  type = SCALAR_VALUE,
+  off = 0x0,
+  {
+    range = 0x0,
+    map_ptr = 0x0 <fixed_percpu_data>,
+    {
+      btf = 0x0 <fixed_percpu_data>,
+      btf_id = 0x0
+    },
+    mem_size = 0x0,
+    raw = {
+      raw1 = 0x0,
+      raw2 = 0x0
+    }
+  },
+  id = 0x0,
+  ref_obj_id = 0x0,
+  var_off = {
+    value = 0x0,
+    mask = 0xffffffffffffffff
+  },
+  smin_value = 0x8000000000000000,
+  smax_value = 0x7fffffffffffffff, 
+  umin_value = 0x1,
+  umax_value = 0xffffffffffffffff,
+  s32_min_value = 0x80000000,
+  s32_max_value = 0x7fffffff,
+  u32_min_value = 0x1,
+  u32_max_value = 0xffffffff,
+  parent = 0x0 <fixed_percpu_data>,
+  frameno = 0x0,
+  subreg_def = 0x0,
+  live = REG_LIVE_WRITTEN,
+  precise = 0x1
+}
+
+BPF_JMP32_IMM(BPF_JLE, BPF_REG_7, 1, 1)中针对寄存器的变化记录：
+verifier:7200执行后修改了u32_max_value的值：
+```
+if (is_jmp32) {
+	s32 false_smin = opcode == BPF_JSLT ? sval32    : sval32 + 1;
+	s32 true_smax = opcode == BPF_JSLT ? sval32 - 1 : sval32;
+
+	false_reg->s32_min_value = max(false_reg->s32_min_value, false_smin);
+	true_reg->s32_max_value = min(true_reg->s32_max_value, true_smax);
+```
+$33 = {
+  type = SCALAR_VALUE,
+  off = 0x0,
+  {
+    range = 0x0,
+    map_ptr = 0x0 <fixed_percpu_data>,
+    {
+      btf = 0x0 <fixed_percpu_data>,
+      btf_id = 0x0
+    },
+    mem_size = 0x0,
+    raw = {
+      raw1 = 0x0,
+      raw2 = 0x0
+    }
+  },
+  id = 0x0,
+  ref_obj_id = 0x0,
+  var_off = {
+    value = 0x0,
+    mask = 0xffffffffffffffff
+  },
+  smin_value = 0x8000000000000000,
+  smax_value = 0x7fffffffffffffff,
+  umin_value = 0x1,
+  umax_value = 0xffffffffffffffff,
+  s32_min_value = 0x80000000,
+  s32_max_value = 0x7fffffff,
+  u32_min_value = 0x1,
+  u32_max_value = 0x1,
+  parent = 0xffff8881059d2348,
+  frameno = 0x0,
+  subreg_def = 0x0,
+  live = REG_LIVE_NONE,
+  precise = 0x1
+}
+__reg_combine_32_into_64 -> __update_reg_bounds(L1288) -> __reg32_deduce_bounds修改s32_min_value和s32_max_value的值
+(前)
+$54 = {
+  type = SCALAR_VALUE,
+  off = 0x0,
+  {
+    range = 0x0,
+    map_ptr = 0x0 <fixed_percpu_data>,
+    {
+      btf = 0x0 <fixed_percpu_data>,
+      btf_id = 0x0
+    },
+    mem_size = 0x0,
+    raw = {
+      raw1 = 0x0,
+      raw2 = 0x0
+    }
+  },
+  id = 0x0,
+  ref_obj_id = 0x0,
+  var_off = {
+    value = 0x0,
+    mask = 0xffffffffffffffff
+  },
+  smin_value = 0x8000000000000000,
+  smax_value = 0x7fffffffffffffff,
+  umin_value = 0x1,
+  umax_value = 0xffffffffffffffff,
+  s32_min_value = 0x80000000,
+  s32_max_value = 0x7fffffff,
+  u32_min_value = 0x1,
+  u32_max_value = 0x1,
+  parent = 0xffff888103b35348,
+  frameno = 0x0,
+  subreg_def = 0x0,
+  live = REG_LIVE_NONE,
+  precise = 0x1
+}
+(后)
+$84 = {
+  type = SCALAR_VALUE,
+  off = 0x0,
+  {
+    range = 0x0,
+    map_ptr = 0x0 <fixed_percpu_data>,
+    {
+      btf = 0x0 <fixed_percpu_data>,
+      btf_id = 0x0
+    },
+    mem_size = 0x0,
+    raw = {
+      raw1 = 0x0,
+      raw2 = 0x0
+    }
+  },
+  id = 0x0,
+  ref_obj_id = 0x0,
+  var_off = {
+    value = 0x0,
+    mask = 0xffffffffffffffff
+  },
+  smin_value = 0x8000000000000000,
+  smax_value = 0x7fffffffffffffff,
+  umin_value = 0x0,
+  umax_value = 0xffffffffffffffff,
+  s32_min_value = 0x1,
+  s32_max_value = 0x1,
+  u32_min_value = 0x1,
+  u32_max_value = 0x1,
+  parent = 0xffff88810698f348,
+  frameno = 0x0,
+  subreg_def = 0x0,
+  live = REG_LIVE_NONE,
+  precise = 0x1
+}
+__reg_bound_offset(L1296)刷新了var_off:
+$85 = {
+  type = SCALAR_VALUE,
+  off = 0x0,
+  {
+    range = 0x0,
+    map_ptr = 0x0 <fixed_percpu_data>,
+    {
+      btf = 0x0 <fixed_percpu_data>,
+      btf_id = 0x0
+    },
+    mem_size = 0x0,
+    raw = {
+      raw1 = 0x0,
+      raw2 = 0x0
+    }
+  },
+  id = 0x0,
+  ref_obj_id = 0x0,
+  var_off = {
+    value = 0x1,
+    mask = 0xffffffff00000000
+  },
+  smin_value = 0x8000000000000000,
+  smax_value = 0x7fffffffffffffff,
+  umin_value = 0x0,
+  umax_value = 0xffffffffffffffff,
+  s32_min_value = 0x1,
+  s32_max_value = 0x1,
+  u32_min_value = 0x1,
+  u32_max_value = 0x1,
+  parent = 0xffff88810698f348,
+  frameno = 0x0,
+  subreg_def = 0x0,
+  live = REG_LIVE_NONE,
+  precise = 0x1
+}
+最终的__update_reg_bounds(reg)(L1297)后寄存器：
+$88 = {
+  type = SCALAR_VALUE,
+  off = 0x0,
+  {
+    range = 0x0,
+    map_ptr = 0x0 <fixed_percpu_data>,
+    {
+      btf = 0x0 <fixed_percpu_data>,
+      btf_id = 0x0
+    },
+    mem_size = 0x0,
+    raw = {
+      raw1 = 0x0,
+      raw2 = 0x0
+    }
+  },
+  id = 0x0,
+  ref_obj_id = 0x0,
+  var_off = {
+    value = 0x1,
+    mask = 0xffffffff00000000
+  },
+  smin_value = 0x8000000000000001,
+  smax_value = 0x7fffffff00000001,
+  umin_value = 0x1,
+  umax_value = 0xffffffff00000001,
+  s32_min_value = 0x1,
+  s32_max_value = 0x1,
+  u32_min_value = 0x1,
+  u32_max_value = 0x1,
+  parent = 0xffff88810698f348,
+  frameno = 0x0,
+  subreg_def = 0x0,
+  live = REG_LIVE_NONE,
+  precise = 0x1
+}
+
+

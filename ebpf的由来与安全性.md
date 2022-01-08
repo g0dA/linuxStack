@@ -16,13 +16,13 @@
 在最初的设计中，`BPF vm`由一个`抽象累加器`，一个`索引寄存器`，一个`临时存储器`和一个`隐式PC指针`组成，而`filter`则被设计成跑在这个虚拟机中的代理程序。
 
 
-![3ec46886-3870-49a4-bcfa-c22e0d8dc178.png](ebpf的由来与安全性_files/3ec46886-3870-49a4-bcfa-c22e0d8dc178.png)
+![beb25319-f5c1-4a34-a8b8-745f6aefabb7.png](ebpf的由来与安全性_files/beb25319-f5c1-4a34-a8b8-745f6aefabb7.png)
 
 
 适用于虚拟机的指令集用以编写过滤规则，长度固定都是32位。
 
 
-![63996063.png](ebpf的由来与安全性_files/63996063.png)
+![a3744947-aaed-4479-97f9-ec375896495c.png](ebpf的由来与安全性_files/a3744947-aaed-4479-97f9-ec375896495c.png)
 
 
 `tcpdump`是基于`BPF`实现的，因此可以通过`tcpdump`的输出来当作一个实际的例子，观察一条过滤规则经过解释后会变成怎样的一段`汇编程序`：
@@ -148,7 +148,7 @@ static unsigned int run_filter(const struct sk_buff *skb,
 
 其中第`4`点是`eBPF`得以大力发展的关键原因，而第`5`点则代表了`BPF`和`eBPF`的区别，从此以后原始的`BPF`就被称为`cBPF`，而现代`BPF`都指的是`eBPF`：
 ```
-  - Number of registers increase from 2 to 10  寄存器的增加到10个
+  - Number of registers increase from 2 to 10  寄存器的增加到10个 （现代已经有了11个r0-r10外加一个PC寄存器）
   - Register width increases from 32-bit to 64-bit  寄存器宽度变成64位
   - Conditional jt/jf targets replaced with jt/fall-through 
   - Adds signed > and >= insns
@@ -198,7 +198,69 @@ static unsigned int run_filter(const struct sk_buff *skb,
 2. 从第一个`insn`开始延伸所有可能的路径，模拟执行每一个`insn`的执行已经观察`寄存器`和`stack`的状态变化
 
 
+而现代`eBPF`的指令是固定`64位`的编码，发展至今有100多条，具体的可以看`IOVisor`维护的指令集，其结构如下：
+
+
+    msb                                                        lsb
+    +------------------------+----------------+----+----+--------+
+    |immediate               |offset          |src |dst |opcode  |
+    +------------------------+----------------+----+----+--------+
+
+
+ - 8 bit opcode 操作码
+ - 4 bit destination register (dst) 目的寄存器
+ - 4 bit source register (src) 源寄存器
+ - 16 bit offset 偏移值
+ - 32 bit immediate (imm) 立即数
+
+
+但并不是所有的区域都会被用到的，因此当此区域在指令中无用时就置为0
+其中`8 bit opcode`的低3位代表了指令的所属类别即`instruction class`.
+例如LD/LDX/ST/STX`指令的`opcode`就可以划分为3部分:
+
+
+    msb      lsb
+    +---+--+---+
+    |mde|sz|cls|
+    +---+--+---+
+
+
+2位的`sz`代表了`load/store`的大小：
+
+
+|  SIZE   | value  | byte |
+|  ----  | ----  | --- |
+| BPF_DW| 0x18 | 8 |
+| BPF_W | 0x00 | 4 |
+| BPF_H | 0x08 | 2 |
+| BPF_B | 0x10 | 1 |
+
+
+3位的`mde`则代表了操作模式(举例)：
+* `BPF_IMM`：load立即数到寄存器
+* `BPF_MEM`：store到内存
+
+
+再比如ALU/ALU64/JMP指令的`opcode`划分:
+
+
+    msb      lsb
+    +----+-+---+
+    |op  |s|cls|
+    +----+-+---+
+
+
+`s`只占了1位，如果为`BPF_K(0)`的话则代表源操作数是`imm`，如果是`BPF_X(1)`的话则来源于`src`，而`op`的话则可以对照着指令集学习。
+
+
 > 因为`eBPF`发展速度的问题`verifier`的逻辑在不断的加强，因此关于`verifier`的讨论放到后面安全样例中一一探讨
+
+
+# `eBPF`的坑
+> 这部分内容其实偏向于开发因此对我自身来说也是浅尝辄止，而且技术上也会因为时间的问题存在差异
+
+
+一些简单的思想与未来的规划可以直接参照一下[BPF Design Q&A](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/bpf/bpf_design_QA.rst)，这是设计者们的回答十分的简洁明了
 
 
 # `eBPF`安全吗？
@@ -281,6 +343,7 @@ if (untrusted_offset_from_caller < arr1->length) {
 }
 ```
 当执行到`line 9`时如果`arr1->length`是`uncached`会进行分支预测直接执行到`line 10`，这儿的`untrusted_offset_from_caller`是攻击者控制的一个变量长度实际上是大于`arr1->length`的那么就会出现一个越界读取的问题，接着进入到`line 11`的逻辑通过`位运算`计算出`index2`的值，这儿的值要么是`0x200`要么是`0x300`，那么当执行到`line 13`时就会因为赋值操作而把`arr2->data[0x200]/arr2->data[0x300]`放到`cache`中，然后当处理器正确判断出`untrusted_offset_from_caller`是大于`arr1->length`时会回滚寄存器到预执行前的状态，然而这时候`arr2->data[index2]`却已经存在于`L1 cache`中，那么攻击者只要接下来通过判断访问`arr2->data[0x200]`和`arr2->data[0x300]`的速度就可以确定`index2`的值进而推算出`arr1->data[untrusted_offset_from_caller]`这个越界地址上的数据是`0`或者`1`。
+> 详细利用可以参照附件中的`spectre1.c`
 
 
 说了这么多这个漏洞和`BPF`有啥关系呢？`Spectre`这个漏洞要想被成功利用的话那么就需要攻击者运行一个类似于上述模式的代码即利用到一个越界索引，因此`GPZ`提出了两种利用方式：
@@ -301,18 +364,379 @@ r9 = *(u8 *)(r6)
 // leak r9
 ```
 可以看到两个分支中，第一个是将`r9`的值复制给`r6`，而第二个则是会将`r6`作为指针获取到指向的数据然后赋值给`r9`，如果两者能同时执行的话岂不是可以通过`r9`传入一个地址而导致`任意内存访问`，如果从单纯从逻辑上来，`r6 = r9`和`r9 = *(u8 *)(r6)`是不可能同时被执行的因为`r0`的值不可能既是`0x0`又是`0x1`，实际上`BPF verifier`也是这么想的，它通过遍历所有的代码分支认定这个流程不会导致把可控数据当作是指针访问的情况，所以上述的代码就被成功加载了。
-但是由于`分支预测`的存在，因为两个`条件分支指令`的执行结果都需要先加载`r0`，如果此时`r0`不在`cache`中的话`CPU`就会主动去将分支中的指令加入到执行流水线中并将所需数据载入到`cache`中，这就导致`r6 = r9`和`r9 = *(u8 *)(r6)`因为`预测`的关系被先后执行，而一些特定的`eBPF`可以在开启配置后无需`root`权限运行直接导致了一个`低权限任意内存访问`漏洞。
-
-
+但是由于`分支预测`的存在，因为两个`条件分支指令`的执行结果都需要先加载`r0`，如果此时`r0`不在`cache`中的话`CPU`就会主动去将分支中的指令加入到执行流水线中并将所需数据载入到`cache`中，这就导致`r6 = r9`和`r9 = *(u8 *)(r6)`因为`预测`的关系被先后执行，而一些特定的`eBPF`可以在开启配置后无需`root`权限运行直接导致了一个`低权限任意内存访问`漏洞，补丁则不是很难理解，就是去验证了所有的路径来确保不会有自定义指针的出现。
 
 
 ### `CVE-2020-8835`
+> 这个漏洞应该说是`eBPF`最为出名的漏洞了，因为其被运用在了2020年的`pwn2own`中进而使得后续的一系列漏洞都是沿着这个漏洞的思路被相继挖掘出来
+
+
+`eBPF`的寄存器宽度统一增加到了`64位`但是这不代表`eBPF`就不再支持`32位`指令了，而是通过`32-bit sub-register`的方式来执行，说白了就是将`64bit寄存器`的`高32位`置零。但是在早期却缺少一个`JMP32指令`导致生成的代码在`subregister`上运行并不是很高效，最典型的例子就是在进行有符号比较时需要进行从`32bit`符号扩展到`64bit`。因此社区在`ebpf`中提供了`jmp32`指令来完成针对`32bit eBPF架构`的支持，但是很可惜的很多的`bug`也因此而来。
+
+
+问题依旧出现在`verifier`中，先前就曾说过`verifier`检查一个`eBPF`程序的一个重要手段就是模拟执行，然后保留并检查寄存器的状态那正如上述的如果此刻模拟执行到的指令是`jmp32`的话会发生什么呢？
+```
+static int do_check(struct bpf_verifier_env *env)
+{
+    ......
+            } else if (class == BPF_JMP || class == BPF_JMP32) {
+            u8 opcode = BPF_OP(insn->code);
+            env->jmps_processed++;
+            ......
+            } else {
+                err = check_cond_jmp_op(env, insn, &env->insn_idx);
+                if (err)
+                    return err;
+                }
+            } else if (class == BPF_LD) {
+```
+在大部分情况下`jmp/jmp32`都会进入到`check_cond_jmp_op`的逻辑当中也就是条件判断后跳转，那么既然是个跳转当然会验证跳转的地址是不是在规范的范围内，不然不就会出现`OOB`了吗？简单的看一下这个函数的逻辑，可以看出来前半部分相当的逻辑都是为了获取到`src_reg = &regs[insn->src_reg];`和`dst_reg = &regs[insn->dst_reg];`已经相应的跳转分支(`branch`)。接着根据`src_reg`和`dst_reg`的类型调用`reg_set_min_max`设置`最大最小取值范围`。
+在跟入函数前先优先看一下`bpf_reg_state`这个结构体以及大概说明下设计逻辑
+```
+struct bpf_reg_state {
+    enum bpf_reg_type type;
+    union {
+        u16 range;
+        struct bpf_map *map_ptr;
+        unsigned long raw;
+    };
+    s32 off;
+    u32 id;
+    u32 ref_obj_id;
+    struct tnum var_off;
+
+
+    s64 smin_value; /* minimum possible (s64)value */
+    s64 smax_value; /* maximum possible (s64)value */
+    u64 umin_value; /* minimum possible (u64)value */
+    u64 umax_value; /* maximum possible (u64)value */
+    struct bpf_reg_state *parent;
+    u32 frameno;
+    s32 subreg_def;
+    enum bpf_reg_liveness live;
+    bool precise;
+};
+```
+为了防止`OOB`的情况，`eBPF`中设计了一个`bpf_reg_state`的结构体用来维护某个操作数的属性以及寄存器的状态，但是这儿就有一个问题出来了就是这个操作数很有可能是等待用户传入的而非一个确定值，这样的话当发生运算之后一个操作数很有可能就发生了越界，为了防止这种情况如同上述的结构体成员所示一个操作数被限制了`最大最小值`，当运算后如果超过这个范围的话就会被禁止掉，同时还设计了`tnum`结构体用于描述操作数的每一位，对于确定的值来说最大最小值自然没有什么意义，但是对于未确定的值来说用`tnum`和`最大最小值`就可以将操作数尽可能的预测出来以用于后续的运算当中。
+对于`verifer`中的操作数来说，某一位只会有三种状态：
+1. `0`
+2. `1`
+3. `未知`
+
+
+那么该怎么用一个`tnum`来涵盖所有的可能呢？
+```
+struct tnum {
+    u64 value;
+    u64 mask;
+};
+```
+|  value   | mask  | 预测值 |
+|  ----  | ----  | --- |
+|0 | 0 | 0 |
+|1 | 0 | 1 |
+|0 | 1 | 未知 |
+|1 | 1 | 禁止 |
+方式就可以用一个`tnum`将可能出现的值全部涵盖住进而进行模拟执行。
+回到函数逻辑当中可以看到这样的一个函数调用：
+```
+    /* We might have learned some bits from the bounds. */
+    __reg_bound_offset(false_reg);
+    __reg_bound_offset(true_reg);
+    if (is_jmp32) {
+        __reg_bound_offset32(false_reg);
+        __reg_bound_offset32(true_reg);
+    }
+```
+简单来说的话在`reg_set_min_max`中会根据`opcode`的类型再次给出新的预测数和预测范围，然后就可以用两个预测数获取一个更加精确的预测数，其逻辑就是如果一个预测数的某位已知且另一位为未知则该位已知。
+那么说白了`__reg_bound_offset`就是一个针对预测数的二次精确预测而已，而`__reg_bound_offset32`则是为了契合`jmp32`这种32位指令而仿照出来的在`32位`下有更好预测能力的函数，这个函数好在哪里可以简单说明一下。
+```
+ 193: (85) call bpf_probe_read_user_str#114
+   R0=inv(id=0)
+ 194: (26) if w0 > 0x1 goto pc+4
+   R0_w=inv(id=0,umax_value=0xffffffff00000001)
+ 195: (6b) *(u16 *)(r7 +80) = r0
+ 196: (bc) w6 = w0
+   R6_w=inv(id=0,umax_value=0xffffffff,var_off=(0x0; 0xffffffff))
+ 197: (67) r6 <<= 32
+   R6_w=inv(id=0,smax_value=0x7fffffff00000000,umax_value=0xffffffff00000000,
+            var_off=(0x0; 0xffffffff00000000))
+ 198: (77) r6 >>= 32
+   R6=inv(id=0,umax_value=0xffffffff,var_off=(0x0; 0xffffffff))
+```
+可以看到第`196`行对`64位`进行了截断了`高32位`，然后在`197`进行`<< 32`的操作，到了`198`再进行`>> 32`导致本该限制在`0/1`的`r6`变成了`var_off(0x0, 0xffffffff)`，为了解决这个问题添加了补丁针对`32位`的指令则只取`低32位`然后再计算
+```
+193: (85) call bpf_probe_read_user_str#114
+   R0=inv(id=0)
+ 194: (26) if w0 > 0x1 goto pc+4
+   R0_w=inv(id=0,smax_value=0x7fffffff00000001,umax_value=0xffffffff00000001,
+            var_off=(0x0; 0xffffffff00000001))
+ 195: (6b) *(u16 *)(r7 +80) = r0
+ 196: (bc) w6 = w0
+   R6_w=inv(id=0,umax_value=0xffffffff,var_off=(0x0; 0x1))
+ 197: (67) r6 <<= 32
+   R6_w=inv(id=0,umax_value=0x100000000,var_off=(0x0; 0x100000000))
+ 198: (77) r6 >>= 32
+   R6=inv(id=0,umax_value=1,var_off=(0x0; 0x1))
+```
+看一眼`__reg_bound_offset32`的具体实现：
+```
+static void __reg_bound_offset32(struct bpf_reg_state *reg)
+{
+    u64 mask = 0xffffFFFF;
+    struct tnum range = tnum_range(reg->umin_value & mask,
+                       reg->umax_value & mask);  //只取低32bit
+    struct tnum lo32 = tnum_cast(reg->var_off, 4); //取原reg->var_off的低32bit
+    struct tnum hi32 = tnum_lshift(tnum_rshift(reg->var_off, 32), 32); //取高32bit，低32bit为0
+
+
+    reg->var_off = tnum_or(hi32, tnum_intersect(lo32, range));
+}
+```
+然而恰恰好是这个函数中的`tnum_range`出现了问题，因为只取`低32bit`的话倘若此刻`reg->umin_value = 0x1`，`reg->umax_value = 0x?0000001`那么经过`tnum_range`后获得的结果就会是`range{0x1, 0x0}`，再看`tnum_intersect`的实现：
+```
+struct tnum tnum_intersect(struct tnum a, struct tnum b)
+{
+    u64 v, mu;
+    v = a.value | b.value;
+    mu = a.mask & b.mask;
+    return TNUM(v & ~mu, mu);
+}
+```
+因为`b{0x1, 0x0}`的原因导致`v = 0x1`，`mu = 0x0`进而使得无论真实的操作数是什么最终的预测值是固定值`0x1`，这就导致了一个可控的数据绕过了`verifier`的检查。
+再从溯源来看如何触发，核心的就是让一个未知的操作数进入到`__reg_bound_offset32`中，那毫无疑问的就是需要运用到`BPF_JMP32`并且`Dst`是一个不定的操作数，如果要让逻辑从`check_cond_jmp_op`进入到`reg_set_min_max`中，`BPF_SRC(insn->code) != BPF_X`就是一个非常好分支潜在含义就是操作源需要是一个`BPF_K`，而进入到`reg_set_min_max`又为了不让因为不同的`opcode`导致的原始的`最大最小值`与`预测值`发生变化，那么就很显然了能够触发到漏洞的`eBPF`写法如下类似：
+```
+BPF_JMP32_IMM(BPF_JEQ, BPF_REG_num, imm, off)
+```
+当然前提条件就是此时`BPF_REG_num`的`umin_value = 0x1`且`umax_value = 0x?00000001`，这个构造的实现依然要回到`reg_set_min_max`中，当`opcode`为`BPF_JGE/BPF_JGT/BPF_JLE/BPF_JLT`的时候会在进入到`__reg_bound_offset32`就更改`umax/umin`的值：
+```
+BPF_JMP32_IMM(BPF_JGE, BPF_REG_num, 1, off) // umin = 0x1
+ 
+BPF_MOV64_IMM(8,0x1)        
+BPF_ALU64_IMM(BPF_LSH,8,32)
+BPF_ALU64_IMM(BPF_ADD,8,1)
+BPF_JMP_REG(BPF_JLE, BPF_REG_num,8,off) // umax = 0x100000001
+```
+举个例子：
+```
+BPF_JMP_IMM(BPF_JNE, BPF_REG_6, 1, 2),
+BPF_MOV64_IMM(BPF_REG_0, 0),
+BPF_EXIT_INSN(),
+shellcode，
+```
+在`verifier`中最终`BPF_REG_6`的预测值会是一个恒定的`0x1`，那么在检查器中是否会因为`REG_6`的值恒定和`IMM`相等直接导致代码逻辑会直接进入到`exit(0)`的阶段而永远无法执行`shellcode`这也就导致`verifier`不会检查`shellcode`呢？
+这需要重新回过看一下在`do_check()`中`BPF_EXIT`的逻辑，在`process_bpf_exit`的逻辑如下：
+```
+process_bpf_exit:
+                update_branch_counts(env, env->cur_state);
+                err = pop_stack(env, &prev_insn_idx,
+                        &env->insn_idx);
+                if (err < 0) {
+                    if (err != -ENOENT)
+                        return err;
+                    break;
+                } else {
+                    do_print_state = true;
+                    continue;
+                }
+```
+在正式退出前会调用`pop_stack`弹出分支，如果没有分支的话则直接返回但是如果还有分支存在的话则重复分支检查的逻辑，所以很可惜的是在`check_cond_jmp_op`的逻辑中是先去圧入分支的，因此阻断`verifier`的利用方式并不成立，而真正的利用思路则是利用`reg`的真实值和预测值的不同来产生两个完全不同的结果，即让`verifier`去模拟`shellcode`的执行但是却因为`reg`的问题而只能获得一个安全的结果。
+```
+// shellcode reg6 = 1
+BPF_ALU64_IMM(BPF_AND, BPF_REG_6, 2), // r6 &= 2
+BPF_ALU64_IMM(BPF_RSH, BPF_REG_6, 1), // r6 >>= 1   
+// r6 = 0x1 ; r6 = 0x0 in verifier
+BPF_ALU64_IMM(BPF_MUL, BPF_REG_6, 0xd0),
+```
+因为在预测值中`r6`是恒定为1的，因此在`verifier`的模拟执行下，`BPF_ALU64_IMM(BPF_MUL, BPF_REG_6, 0xd0),`这行的结果中应该是`0 * 0xd0 =0x0`，然而实际结果中主要`r6 = 2`的话就会导致该结果为`1 * 0xd0 = 0xd0`，这就获得了一个可控且逃逸了检测的偏移量并可以藉此偏移量实现任意地址读取/写入。
+当然在实际利用中会有`kaslr`的问题因此要先绕过这一个部分，可以通过对比一个全局变量地址的偏移来算出`kaslr`的偏移：
+```
+BPF_LD_MAP_FD(BPF_REG_1, poc_map_fd), // r1 = poc_map_fd
+BPF_ALU64_IMM(BPF_MOV, BPF_REG_7, 0), // r7 = 0
+BPF_MAP_GET_ADDR(0, BPF_REG_7), // r7 = &poc_map_fd[0]   
+BPF_ALU64_REG(BPF_SUB, BPF_REG_7, BPF_REG_6),
+```
+`BPF_MAP_GET_ADDR(0, BPF_REG_7), // r7 = &poc_map_fd[0]`会使得`r7`指向`array[0]`的地址，而在内核的数据结构中的位置即当前`r7`指向的位置如下：
+```
+struct bpf_array {
+    struct bpf_map map;
+    u32 elem_size;
+    u32 index_mask;
+    struct bpf_array_aux *aux;
+    union {
+        char value[]; // <--- r7
+        void *ptrs[];
+        void *pptrs[];
+    };
+}
+```
+而在`struct bpf_map map`存在一个在内核初始化时就确定了位置的成员变量`ops`，这是一个操作集指针指向的是当前`map`类型的`ops地址`，因为创建的是一个`array_map`因此这儿指向的应该是`array_map_ops`：
+```
+$ objdump -D vmlinux |grep array_map_ops     
+ffffffff8231a6a0 <array_map_ops>:
+ffffffff8231a6e9:    7f 2c                    jg     ffffffff8231a717 <array_map_ops+0x77>
+ffffffff8231a741:    7e 2c                    jle    ffffffff8231a76f <array_map_ops+0xcf>
+```
+上面的结果是在没有`kaslr`的情况下`array_map_ops`的地址，而`BPF_ALU64_REG(BPF_SUB, BPF_REG_7, BPF_REG_6),`则可以获取到当前实际情况下的`array_map_ops`的地址这样的话通过计算就可以获取到`kaslr`的偏移量从而实现`kaslr`的绕过。
+> 在我测试的内核版本中`bpf_array`中`value`到`map.ops`的偏移量为`0xd0`，这个每个版本可能不太相同因此需要注意一下
+
+
+当绕过了`kaslr`后就可以实现任意读和任意写，但是这儿的任意读却要用点取巧的手段，因为`verifier`中有一系列复杂的检测规则来监控到`寄存器`和`栈`的变化，其中针对指向一些未知地址的指针会有严格内存校验：
+* `check_helper_mem_access` 
+* `check_mem_access`
+
+
+简单来说就是通过`map`我们只能读取到从`value`开始偏移到的任何地址的数据，如果这个数据也是一个`ptr`的话就无法读取到真正的值，说白了就是仅仅能读取/修改一个可以无限扩展的`bpf_array`上的任意的信息，那么如果要任意读的话就可以从内核中找个函数能够读取到`bpf_array`上的某个指针指向的值，这样我们只要通过修改该指针就能实现任意地址读取。
+* `bpf_obj_get_info_by_fd`
+
+
+无疑是最合适的一个函数，这个函数在`bpf_helper`中支持可以用户态调用，然后将指定的内核中的数据信息`copy`到用户态内存里。上面说了我们可以控制到整个`bpf_array`这本质上就是一个`bpf_map`，而这个获取信息的函数中就正好有针对`map`信息获取的逻辑存在：`bpf_map_get_info_by_fd`。
+而其中可以修改的指针的信息就有`btf`：
+```
+ map = {
+    ......
+    btf = 0x0 <fixed_percpu_data>,
+    .......
+}
+/* bpf_map_get_info_by_fd */
+    if (map->btf) {
+        info.btf_id = btf_id(map->btf); // 此处返回的是map->btf->id，因为是个u32变量因此每次只能传输4个字节出来
+        info.btf_key_type_id = map->btf_key_type_id;
+        info.btf_value_type_id = map->btf_value_type_id;
+    }
+```
+而从任意写的实现则稍显麻烦，因为你并不清楚你想要写的地址距离当前地址的偏移是多少，那么一个合理的利用的想法就是让`bpf`自己去向我们给定的地址去写入数据，当然还要绕过`verifier`的各种检查才行，然而`ops`本身的地址却是可写的，那么可以在用户态伪造一个`hack_ops`然后通过`update_map`写入到`map`当中，之后再把`ops`地址修改成`map`中的`hack_ops`这样的话就可以通过触发的方式让内核执行特定的函数且传参可控，而我们要传的当然是`address`和`value`，这样的话就需要找一个函数能够满足`*address = value`的逻辑。
+> 这儿直接用别人已经研究出来的结果`array_map_get_next_key`
+
+
+```
+/* Called from syscall */
+static int array_map_get_next_key(struct bpf_map *map, void *key, void *next_key)
+{
+    struct bpf_array *array = container_of(map, struct bpf_array, map);
+    u32 index = key ? *(u32 *)key : U32_MAX;
+    u32 *next = (u32 *)next_key;
+
+
+    if (index >= array->map.max_entries) {
+        *next = 0;
+        return 0;
+    }
+
+
+    if (index == array->map.max_entries - 1)
+        return -ENOENT;
+
+
+    *next = index + 1;
+    return 0;
+}
+```
+可以看出来这个函数只要`next_key`是`address`，而`key`是`value`就能实现地址值的控制。
+> 关于写入地址的问题在ebpf中是无法将一个指针写入map的，因此就需要预先就知道map的地址，在5.5版本以下bpf_map的结构中不存在`struct mutext freeze_mutex`这就导致无法泄露出`map_elem`的地址从而加大了利用难度，我的测试环境是5.4恰好无法利用起来 T^T
+
+
+当能够重写`ops`就可以通过修改`modprobe_path`的值来实现提权。
+
+
 ### `CVE-2021-31440`
-### `CVE-2021-3490`
+> 2021年的pwn2own的ebpf漏洞，和`8835`类似却又更加纯粹是一个完全的`64`与`32`之间的转换错误导致的漏洞，因此利用上可以参照`8835`
 
 
+这个漏洞是从这个[[bpf-next PATCH v2 2/7] bpf: verifier, do explicit ALU32 bounds tracking](https://lore.kernel.org/bpf/158560419880.10843.11448220440809118343.stgit@john-Precision-5820-Tower/)引入的，主要的功能是用`64位`寄存器的已知范围来推测出该寄存器的`32位`情况下的最大最小值，然而却又在计算时出现了问题。现有的`verifier`会认为`32`位的最小值是等于`64`位的，但当一个寄存器的`64`位下的无符号最小值是`0x100000000`时，`32`位的无符号最小值却是`0x0`二者并不相等，这就造成了`verifier`在预测的时候和实际情况产生了误差从而造成与`8835`一样的情况产生。
+从调用链来看，当执行一个`BPF_JMP_IMM(BPF_JGE, BPF_REG_7, 1, 1)`指令的过程会如下：
+```
+do_check => check_cond_jmp_op => reg_set_min_max => __reg_combine_64_into_32
+```
+这个指令是一个`64`位的跳转应当设置`64`位的最大最小值，但是在`__reg_combine_64_into_32`却会同时预设`32`位的最大最小值
+```
+static void __reg_combine_64_into_32(struct bpf_reg_state *reg)
+{
+    __mark_reg32_unbounded(reg);
 
 
+    if (__reg64_bound_s32(reg->smin_value) && __reg64_bound_s32(reg->smax_value)) {
+        reg->s32_min_value = (s32)reg->smin_value;
+        reg->s32_max_value = (s32)reg->smax_value;
+    }
+    if (__reg64_bound_u32(reg->umin_value)) // [1]
+        reg->u32_min_value = (u32)reg->umin_value;
+    if (__reg64_bound_u32(reg->umax_value)) // [2]
+        reg->u32_max_value = (u32)reg->umax_value;
+
+
+    /* Intersecting with the old var_off might have improved our bounds
+     * slightly.  e.g. if umax was 0x7f...f and var_off was (0; 0xf...fc),
+     * then new var_off is (0; 0x7f...fc) which improves our umax.
+     */
+    __reg_deduce_bounds(reg);
+    __reg_bound_offset(reg);
+    __update_reg_bounds(reg);
+}
+```
+`[1]`处会顺利执行从而导致`reg->u32_min_value = 0x1`，但其实逻辑是不对的，因为只有最大最小实际值都在`32`位范围内`32`位的预测最大最小预测值才能相等于`64`位的最大最小预测值，所以如上逻辑其实只有`[1]`执行了而`[2]`却没有被执行，那么仅仅是这样会产生什么样的问题呢？
+在有漏洞的版本中上面的指令已经顺利执行了并且导致`u32_min_value`被修改成了`0x1`，那么当下一条指令是`BPF_JMP32_IMM(BPF_JLE, BPF_REG_7, 1, 1)`就会产生奇妙的变化，这是一个`32`位的条件跳转那么自然要走的是`32`位的执行逻辑，第一步要执行的就是修改`u32_max_value = 0x1`：
+```
+static void reg_set_min_max(struct bpf_reg_state *true_reg,
+                struct bpf_reg_state *false_reg,
+                u64 val, u32 val32,
+                u8 opcode, bool is_jmp32)
+{
+    ......
+    case BPF_JLE:
+    case BPF_JLT:
+    {
+        if (is_jmp32) {
+            u32 false_umin = opcode == BPF_JLT ? val32  : val32 + 1;
+            u32 true_umax = opcode == BPF_JLT ? val32 - 1 : val32;
+
+
+            false_reg->u32_min_value = max(false_reg->u32_min_value,
+                               false_umin);
+            true_reg->u32_max_value = min(true_reg->u32_max_value,
+                              true_umax);
+```
+> 因为是条件跳转所以只需要关注`true_reg`的变化即可
+
+
+在`reg_set_min_max`的逻辑最后因为是`is_imp32 = 1`的原因会进入到`__reg_combine_32_into_64 -> __update_reg_bounds -> __reg32_deduce_bounds`的逻辑当中且命中如下判断：
+```
+    if ((s32)reg->u32_max_value >= 0) {
+        /* Positive.  We can't learn anything from the smin, but smax
+         * is positive, hence safe.
+         */
+        reg->s32_min_value = reg->u32_min_value;
+        reg->s32_max_value = reg->u32_max_value =
+            min_t(u32, reg->s32_max_value, reg->u32_max_value);
+```
+该逻辑之后`true_reg`的属性将会变成如下情况：
+```
+s32_min_value = 0x1,
+s32_max_value = 0x1,
+u32_min_value = 0x1,
+u32_max_value = 0x1,
+```
+这些值会用作于接下来的`__reg_bound_offset`函数来修改寄存器的`var_off`：
+```
+/* Attempts to improve var_off based on unsigned min/max information */
+static void __reg_bound_offset(struct bpf_reg_state *reg)
+{
+    struct tnum var64_off = tnum_intersect(reg->var_off,
+                           tnum_range(reg->umin_value,
+                              reg->umax_value));
+    struct tnum var32_off = tnum_intersect(tnum_subreg(reg->var_off),
+                        tnum_range(reg->u32_min_value,
+                               reg->u32_max_value));
+
+
+    reg->var_off = tnum_or(tnum_clear_subreg(var64_off), var32_off);
+}
+```
+最终`var32_off`的预测值为`var_off(0x1, 0x0)`成了一个固定值，那么如果再接下来的指令是`BPF_MOV32_REG(BPF_REG_7, BPF_REG_7)`的话在`verifier`的眼中`r7`将会是一个确定值`1`但是实际上如果不是呢？那自然就回到了上一个漏洞中的利用问题上 : )
+
+
+# 后记
+这个文章磨了很久很久，其实本来想写4个漏洞的，但是后面发现ebpf的漏洞大同小异因此就不想花过多的时间放在写文章上转而是自己去了解相关的漏洞并脑补一下流程，说真的这篇帖子虽然写的很乱但是确实是收获了不少，特别是关于`insn`的学习和编写是超出了我的学习计划以外的。关于`ebpf`的安全的学习还是要继续的并且也确定了学习如何`fuzz`的计划因此后面再陆续补全相关的知识吧。
  
 # 参考文档
 * [Berkeley_Packet_Filter](https://en.wikipedia.org/wiki/Berkeley_Packet_Filter)
@@ -335,3 +759,18 @@ r9 = *(u8 *)(r6)
 * [bpf: prevent out of bounds speculation on pointer arithmetic](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/kernel/bpf?id=979d63d50c0c0f7bc537bf821e056cc9fe5abd38)
 * [Spectre revisits BPF](https://lwn.net/Articles/860597/)
 * [bpf: Fix leakage under speculation on mispredicted branches](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/patch/?id=9183671af6dbf60a1219371d4ed73e23f43b49db)
+* [[原创]Linux内核eBPF模块源码分析——verifier与jit](https://bbs.pediy.com/thread-267956.htm)
+* [浅谈处理器级Spectre Attack及Poc分析](https://yangrz.github.io/blog/2018/01/09/cpu/)
+* [Issue 1711: Linux: eBPF Spectre v1 mitigation is insufficient](https://bugs.chromium.org/p/project-zero/issues/detail?id=1711)
+* [BPF and XDP Reference Guide](https://docs.cilium.io/en/v1.10/bpf/#tooling-llvm)
+* [BPF Design Q&A](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/bpf/bpf_design_QA.rst)
+* [bpf: propose new jmp32 instructions](https://lwn.net/Articles/777266/)
+* [IOVisor md](https://github.com/iovisor/bpf-docs/blob/master/eBPF.md)
+* [【译】eBPF 概述：第 2 部分：机器和字节码](https://www.ebpf.top/post/ebpf-overview-part-2/)
+* [bpf: Provide better register bounds after jmp32 instructions](https://github.com/torvalds/linux/commit/581738a681b6faae5725c2555439189ca81c0f1f)
+* [ebpf-信息泄露漏洞分析](https://de4dcr0w.github.io/ebpf-%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90.html)
+* [ebpf原理分析](https://blog.csdn.net/hjkfcz/article/details/104916719)
+* [[PATCH v2 bpf-next 1/7] bpf: implement BPF ring buffer and verifier support for it](https://lore.kernel.org/bpf/20200517195727.279322-2-andriin@fb.com/)
+* [210401_pwn2own](https://flatt.tech/assets/reports/210401_pwn2own/whitepaper.pdf)
+* [CVE-2020-8835 pwn2own 2020 ebpf 提权漏洞分析](https://www.anquanke.com/post/id/203416)
+* [Linux内核eBPF verifier边界计算错误漏洞分析与利用（CVE-2021-31440）](https://mp.weixin.qq.com/s/RuAEFgQLD_btmzfcviJIEw)
