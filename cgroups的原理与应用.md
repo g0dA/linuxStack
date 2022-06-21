@@ -134,13 +134,14 @@ crash> css_set.subsys 0xffff880207f09600
 2. 在正常情况下`cgroup`的目录都是只读挂载的，因此需要有写入权限才能被利用
 
 
-但是很可惜的是，到了`v2`当中`device controllers`被移除了，在·unified hierarchy·中不再提供接口文件而是在`cgroup bpf`基础上实现访问控制，管理者需要通过编写`BPF_PROG_TYPE_CGROUP_DEVICE`类型的`BPF`程序然后`attach`到指定的`cgroup`且类型指定为`BPF_CGROUP_DEVICE`，进程访问设备触发`BPF`程序来决定是否允许访问
+但是很可惜的是，到了`v2`当中`device controllers`被移除了，在·unified hierarchy·中不再提供接口文件而是在`cgroup bpf`基础上实现访问控制，管理者需要通过编写`BPF_PROG_TYPE_CGROUP_DEVICE`类型的`BPF`程序然后`attach`到指定的`cgroup`且类型指定为`BPF_CGROUP_DEVICE`，进程访问设备触发`BPF`程序来决定是否允许访问，这种方式已经使用于`runc`当中了
 
 
 再说说`release_agent`，这本身是`cgroup`的一个清理机制，主要用途就是当`cgroup`中不再有进程的时候就可以触发执行用于清除整个`cgroup`目录或是做其余一些收尾的事情，当然如果想要触发的话就需要在`notify_on_release`中设置为`1`，但是这个机制很容易被滥用，因为其底层原始实际上是在内核中调用了`call_usermodehelper()`也就是在内核态执行用户态的程序权限是十分高的，当`release_agent`的内容可以随意修改的话就很容易遭到利用
 
 
-在早期的版本中`release_agent`的写入检查就仅仅是`root`即可而没有正确检查写入进程是否具有`CAP_SYS_ADMIN`权限，直接导致了当`cgroup`被以读写形式挂载到容器当中时可以轻而易举的形成逃逸，当然这个问题在`CVE-2022-0492`被提交以后就被修补了，但是`release_agent`依然还是在提权思路中一个经久不衰的`tips`
+在早期的版本中`release_agent`的写入检查就仅仅是`root`即可而没有正确检查写入进程是否具有`CAP_SYS_ADMIN`权限，直接导致了当`cgroup`被以读写形式挂载到容器当中时可以轻而易举的形成逃逸，当然这个问题在`CVE-2022-0492`被提交以后就被修补了，但是`release_agent`依然还是在提权思路中一个经久不衰的`tips`，但是很可惜的是`v2`中因为通信机制的问题导致该文件被移除取而代之的是`cgroup.events`文件，而收尾清理的工作则需要管理者主动去监控该文件来实现
+
 
 
 # 结语
