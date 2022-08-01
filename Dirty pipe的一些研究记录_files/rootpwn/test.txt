@@ -1,0 +1,18 @@
+#include <sys/types.h>
+#include <dirent.h>
+#include <unistd.h>
+int main(int argc , char* argv[])
+{
+    DIR * dir;
+    struct dirent * ptr;
+    int i;
+    dir = opendir("/proc");
+    while((ptr = readdir(dir)) != NULL)
+    {
+        printf("d_name : %s\n", ptr->d_name);
+    }
+    closedir(dir);
+
+　　return 0;
+
+}

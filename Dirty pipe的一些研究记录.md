@@ -1,0 +1,100 @@
+# 正文
+> https://dirtypipe.cm4all.com/
+
+
+产生于cm4all产品，在web日志方面采用了splice()的零拷贝技术去快速获取到压缩后的日志.gz文件
+注释：https://man7.org/linux/man-pages/man2/splice.2.html
+
+
+问题是服务器上的日志压缩包出现了错误，CRC32和uncompressed file length前后不一致
+
+
+把所有损坏的压缩包都对比之后发现损坏后的CRC32与uncompressed file length都相同，相同的CRC说明这肯定不是CRC计算的结果
+
+
+尝试解读被写入的字符串：50 4b 01 02 1e 03  14 00
+50 4b is “PK”，
+
+
+01 02 is the code for central directory file header.
+
+
+“Version made by” = 1e 03; 0x1e = 30 (3.0); 0x03 = UNIX
+
+
+“Version needed to extract” = 14 00; 0x0014 = 20 (2.0)
+
+
+这是一个被截断的ZIP central directory头信息
+注释:https://www.jianshu.com/p/717373dd3188  zip文件结构
+
+
+
+
+总结现有的信息：
+1. 这是一个即时构建zip文件的web服务
+2. 它会自己生成一个PK头信息
+3. 但是这个服务进程是由一个没有文件写入权限的用户运行的
+
+
+结论：在现有的观念中这个头信息写入的操作是不可能由进程本身产生的
+
+
+重新复盘：
+
+
+文件损坏的时间：
+* there were 37 corrupt files within the past 3 months
+* they occurred on 22 unique days
+* 18 of those days have 1 corruption
+* 1 day has 2 corruptions (2021-11-21)
+* 1 day has 7 corruptions (2021-11-30)
+* 1 day has 6 corruptions (2021-12-31)
+* 1 day has 4 corruptions (2022-01-31)
+
+
+每个月的最后一天更容易出现损坏问题
+
+
+只有主日志服务器会发生损坏(提供了HTTP连接和ZIP构建)，而备用服务器则不会(闲置的HTTP和zip构建)，二者的本地数据完全相同
+
+
+(中间作者有点被折腾麻了，开始怀疑起宇宙射线，磁盘损坏甚至是服务器里有鬼)
+
+
+再次回到服务的代码逻辑上：
+web服务会通过write()向socket缓存中写入一个ZIP header，然后调用splice()把所有本地压缩文件传入，最后再通过write()写入一个"central directory file header"，和造成损坏的数据完全一致但是问题是这个进程对于这些要发送的压缩文件只有读权限
+
+
+为什么每个月的最后一天容易发生文件损坏的问题？(这儿思维比较跳脱我有点对不上)
+
+
+也许是个内核bug？
+
+
+写两个测试用例来验证是否是内核问题
+一个程序用于不断的写入"AAAAA"到文件中用于模拟log splitter
+```
+#include <unistd.h>
+int main(int argc, char **argv) {
+  for (;;) write(1, "AAAAA", 5);
+}
+// ./writer >foo
+```
+另一个程序利用splice()将文件的内容转移到一个pipe中并且向其中写入"BBBBBB"用于模拟ZIP生成的过程
+```
+#define _GNU_SOURCE
+#include <unistd.h>
+#include <fcntl.h>
+int main(int argc, char **argv) {
+  for (;;) {
+    splice(0, 0, 1, 0, 2, 0);
+    write(1, "BBBBB", 5);
+  }
+}
+// ./splicer <foo |cat >/dev/null
+```
+结论当然是"BBBBB"出现在了foo文件中
+
+
+问题出现在这个commit中：https://github.com/torvalds/linux/commit/f6dd975583bd8ce088400648fd9819e4691c8958，这个commit将缓冲区标识设置成了PIPE_BUF_FLAG_CAN_MERGE，而在最早时候sys_splice()刚引入的时候can_merge=0
