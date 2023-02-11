@@ -8,26 +8,26 @@ skb = skb_from_cqe(rq, cqe, wqe_counter, cqe_bcnt);
 ```
 这是在接收数据包环节中分配`skb`的代码，跟进去就可以看到`xdp`的流程被插入在了这份代码之中
 ```
-    dma_sync_single_range_for_cpu(rq->pdev,
-                      di->addr,
-                      MLX5_RX_HEADROOM,
-                      rq->buff.wqe_sz,
-                      DMA_FROM_DEVICE);
-    prefetch(data);
+dma_sync_single_range_for_cpu(rq->pdev,
+                  di->addr,
+                  MLX5_RX_HEADROOM,
+                  rq->buff.wqe_sz,
+                  DMA_FROM_DEVICE);
+prefetch(data);
 
 
-    if (unlikely((cqe->op_own >> 4) != MLX5_CQE_RESP_SEND)) {
-        rq->stats.wqe_err++;
-        mlx5e_page_release(rq, di, true);
-        return NULL;
-    }
+if (unlikely((cqe->op_own >> 4) != MLX5_CQE_RESP_SEND)) {
+    rq->stats.wqe_err++;
+    mlx5e_page_release(rq, di, true);
+    return NULL;
+}
 
 
-    if (mlx5e_xdp_handle(rq, xdp_prog, di, data, cqe_bcnt))
-        return NULL; /* page/packet was consumed by XDP */
+if (mlx5e_xdp_handle(rq, xdp_prog, di, data, cqe_bcnt))
+    return NULL; /* page/packet was consumed by XDP */
 
 
-    skb = build_skb(va, RQ_PAGE_SIZE(rq));
+skb = build_skb(va, RQ_PAGE_SIZE(rq));
 ```
 可以看到倘若`mlx5e_xdp_handle`返回一个`true`就会跳过下面的`buile_skb`的流程，那这个函数的实现如下：
 ```
@@ -81,26 +81,27 @@ static inline bool mlx5e_xdp_handle(struct mlx5e_rq *rq,
 
 就说逻辑代码本身来说就是针对数据包的处理，例如一个针对`ip`的解析
 ```
-    #include <linux/bpf.h>
-    #include <linux/if_ether.h>
-    #include <linux/ip.h>
-    #include <linux/types.h>
+#include <linux/bpf.h>
+#include <linux/if_ether.h>
+#include <linux/ip.h>
+#include <linux/types.h>
 
-
-    int xdpinit(struct xdp_md *ctx) {
-        void *data = (void *)(long)ctx->data;
-        void *data_end = (void *)(long)ctx->data_end;
-        struct ethhdr *eth = data;
-        if ((void *)eth + sizeof(struct ethhdr) <= data_end) {
-            struct iphdr *ip = data + sizeof(*eth);
-            if ((void *)ip + sizeof(struct iphdr) <= data_end) {
-                return XDP_DROP;
-             } 
-        } else {
-            bpf_trace_printk(\"eth is error\\n\");
-        }
-        return XDP_PASS;
+SEC("xdp")
+int xdpinit(struct xdp_md *ctx) {
+    void *data = (void *)(long)ctx->data;
+    void *data_end = (void *)(long)ctx->data_end;
+    struct ethhdr *eth = data;
+    if ((void *)eth + sizeof(struct ethhdr) <= data_end) {
+        struct iphdr *ip = data + sizeof(*eth);
+        if ((void *)ip + sizeof(struct iphdr) <= data_end) {
+            return XDP_DROP;
+         } 
+    } else {
+        bpf_trace_printk(\"eth is error\\n\");
     }
+    return XDP_PASS;
+}
+char _license[] SEC("license") = "GPL";
 ```
 逻辑代码本身并不难写，但是代码被`ebpf`所限制，因此在实际使用起来功能其实有限的很，比如支持的能力可以参照这个列表：
 * [BPF Features by Linux Kernel Version](https://github.com/iovisor/bcc/blob/master/docs/kernel-versions.md#xdp)
