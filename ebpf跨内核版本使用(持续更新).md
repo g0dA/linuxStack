@@ -25,6 +25,30 @@
 `C`的部分需要考虑到`CO-RE`，因此使用了`bpf_core_read.h`来进行数据读取
 
 
+# `ebpf`类型和加载
+`ebpf`的代码具体是有什么能力和怎么生效，主要取决于:
+1. `prog type`
+2. `attach type`
+
+
+一段`ebpf`要加载进内核当中，需要在`bpf_prog_load`中确认程序能够被hook到哪里，`verifier`中还会去确认函数中是否根据类型调用了允许的[`helper_func`](https://github.com/iovisor/bcc/blob/v0.20.0/docs/kernel-versions.md#program-types)，以及最关键的是需要确认你的代码是否能够针对网络数据包进行直接访问
+
+
+就比如写代码中实际用到的`SEC('sockops')`，其会在加载时候被映射成`BPF_PROG_TYPE_SOCK_OPS`，这个`prog type`的程序能够在数据传输的时候对数据包进行修改，但是只有当该程序被`attach`到指定的地方才能生效，而这个则取决于`attach type`
+
+
+还是以`BPF_PROG_TYPE_SOCK_OPS`举例子，其对应的`attach type`是`BPF_CGROUP_SOCK_OPS`，而这个`attach type`对应的实际函数调用点就只能通过浏览文档或者查询资料来确认了
+
+
+如上是开发的思路顺序，而实际加载的顺序应该是，加载器会根据你在用户态设置的`attach type`再去找对应的`prog type`进行加载，这样的加载对应顺序可以通过[`attach_type_to_prog_type`](https://elixir.bootlin.com/linux/latest/source/kernel/bpf/syscall.c#L3899)看出来，而代码中实际写法的`SEC('xxx')`则可以通过[`prog_type_name`](https://elixir.bootlin.com/linux/latest/source/tools/lib/bpf/libbpf.c#L191)匹配到
+
+
+当然如果是用的`cilium/ebpf`做开发，实际可以通过`elf_reader.go`中的`getProgType`很轻易地查询到写法
+
+
+因此当我们要进行`ebpf`程序开发的时候，我们需要先明确程序的目的，这决定了我们需要使用什么`prog type`，以及其对用的`SEC('XXX')`该怎么定义，接着就是去查看对应的`attach type`有哪些，这决定了写好的`ebpf`程序能够被hook到什么地方，也就是在哪个流程的时候被调用，而每个类型的详细介绍，可以查看这个文档：[Program types (Linux)](https://ebpf-docs.dylanreimerink.nl/linux/program-type/)
+
+
 # 问题记录
 `ebpf`是一项和内核版本强相关的技术，因此绝大部分都是因为内核版本延伸的问题
 
@@ -106,6 +130,32 @@ name = BPF_CORE_READ(t, mm, exe_file, fpath.dentry, d_name.name);
 ```
 2023/07/31 15:35:10 [2023-07-31 15:35:10] field DumpTask: program dump_task: apply CO-RE relocations: load kernel spec: no BTF found for kernel version 3.10.0-1127.19.1.el7.x86_64: not supported
 ```
+## 可变变量问题
+`BPF`代码在加载的时候都会经过`vertify`检测，其中很重要的一部分就是针对数据的边界的预测，防止越界导致内核崩溃，倘若是没有过检测的话，就可能会出现如下的报错
+```
+load program: permission denied: invalid stack type R1 off=-256 access_size=0 (199 line(s) omitted)
+```
+在高版本的内核中，我们只要通过`var &= const`的方式就可以控制一个变量的边界，但是如果是在低版本的内核中，则可能不行，因为在低版本内核中的`vertify`里，是要求`helpers`获取的都是一个确定的值而非可变的值，这个情况可以看这个[commit](https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/commit/kernel/bpf/verifier.c?id=06c1c049721a995dee2829ad13b24aaf5d7c5cce)
+```
+Since the current logic keeps track of the minimum and maximum value of a register throughout the simulated execution, ARG_CONST_STACK_SIZE can be changed to also accept an UNKNOWN_VALUE register in case its boundaries have been set and the range doesn't cause invalid memory accesses.
+```
+所以低版本下的`bpf_probe_read`的第二个参数`size`如果是一个不能确定的值，即使是设置了边界也会导致报错
+
+
+## BTF问题
+`BTF`是为了解决`core`的问题，但是如果`BTF`本身和内核版本对应不上的话，就会出现偏移出错的问题，例如获取不到信息或者获取了错误的信息
+```
+info.pid = (u32)BPF_CORE_READ(task, tgid);
+result:
+PID:4294941857 COMM:ls                  
+PID:4294941858 COMM:git                 
+PID:4294941854 COMM:git                 
+PID:4294941854 COMM:git                 
+PID:4294941854 COMM:git                 
+PID:4294941857 COMM:tail                
+PID:4294941858 COMM:git   
+```
+解决方式只能是尽可能覆盖`btf`，然后能用内核函数获取到信息的尽量都用内核函数来获取
 
 
 ## 循环
@@ -121,6 +171,9 @@ name = BPF_CORE_READ(t, mm, exe_file, fpath.dentry, d_name.name);
 long bpf_loop(u32 nr_loops, void *callback_fn, void *callback_ctx, u64 flags)
 ```
 为了向低版本适配，最终`clang`的`有限循环展开`无疑是最好的选择，这个能力在获取`task_struct`的完整`cwd`上十分重要
+
+
+同时循环中在低版本下不能使用`break`，`continue`，不然会产生回边的问题
 
 
 ## 用户态交互
@@ -299,6 +352,116 @@ char *block = "block\x00";
     if (len == 4)
         return -1;
 ```
+## 代码顺序影响
+当一个外界的值传入到`ebpf`当中后，`vertify`会对这个值进行预测，当这个值是一个控制指针移动的值的话，就会因为超出区域而被认为不合法，但是我们可以手动进行约束，例如
+```
+ cmp = bpf_map_lookup_elem(&path_map, &zero);
+    if (!cmp) {
+        return 0;
+    }
+
+
+    if (cmp->len > 128 || cmp->len < 0) {
+        return 0;
+    }
+```
+这样在`vertify`的预测中，`cmp->len`就会是一个`0-128`的数，那么下一行进行如下操作是没有问题的
+```
+bpf_core_read_user(info.path, cmp->len, pathname);
+```
+但是倘若在预测过以后不是立即使用，而是先去处理别的逻辑的话，就会出问题，例如如下
+```
+   if (cmp->len > 128 || cmp->len < 0) {
+        return 0;
+    }
+    struct task_struct *task = (struct task_struct *)bpf_get_current_task();
+    info.ppid = (u32)BPF_CORE_READ(task, real_parent, pid);
+    // 判断父进程是否为业务进程
+    if (cmp->ppid != info.ppid) {
+        return 0;
+    }
+    bpf_core_read_user(info.path, cmp->len, pathname);
+```
+这时候就会报错，即根据`cmp->len`进行指针移动的话，会越界
+```
+load program: permission denied: 77: (85) call bpf_probe_read#4: R2 unbounded memory access, use 'var &= const' or 'if (var < const)' (97 line(s) omitted)
+```
+## 父进程获取
+在`4.x`的内核版本里，会存在无法通过`task->real_parent->tgid`获取到进程信息的情况，这点在`bcc`中也有提及
+```
+    // Some kernels, like Ubuntu 4.13.0-generic, return 0
+    // as the real_parent->tgid.
+    // We use the get_ppid function as a fallback in those cases. (#1883)
+```
+`bcc`在用户态用一个新的函数去补全了这个信息
+```
+# This is best-effort PPID matching. Short-lived processes may exit
+# before we get a chance to read the PPID.
+# This is a fallback for when fetching the PPID from task->real_parent->tgip
+# returns 0, which happens in some kernel versions.
+def get_ppid(pid):
+    try:
+        with open("/proc/%d/status" % pid) as status:
+            for line in status:
+                if line.startswith("PPid:"):
+                    return int(line.split()[1])
+    except IOError:
+        pass
+    return 0
+```
+具体情况可以参照此[issue](https://github.com/iovisor/bcc/pull/1885)
+
+
+## egress流量的hook
+针对入流量的hook，`xdp`是一个非常不错的选择，但是截止`v6.3`为止，`xdp`都还没有添加`egress`的支持，那么可选项就是一些其他具备数据包修改能力的`prog type`
+* `BPF_PROG_TYPE_SCHED_CLS`
+* `BPF_PROG_TYPE_SCHED_ACT`
+* `BPF_PROG_TYPE_SK_SKB`
+* `BPF_PROG_TYPE_SOCK_OPS`
+* `BPF_PROG_TYPE_SK_MSG`
+* `BPF_PROG_TYPE_LWT_XMIT`
+
+
+以上是我列出来的能够修改数据包内容的或者部分内容的`prog type`，但是是否还有其他更多的我还真没去详细研究过
+
+
+
+
+## 网络中的`__sk_buff`
+
+
+在内核里，数据包的实际结构体是`sk_buff`，但是为了安全，`ebpf`并不能够直接访问`sk_buff`，而是通过`__sk_buff`达到间接访问，即编写代码时候都是`__sk_buff`，而当加载以后`vertifier`会对`__sk_buff`的访问翻译成对应的`sk_buff`的访问
+
+
+在`4.7`版本以前，针对数据包内容的访问都是通过`bpf_skb_load_bytes`，该函数可以从指定地址读取指定长度的数据，但是在后来如果想获取数据基本都是通过直接访问来实现，比如`skb->data`之类的
+而针对数据包的修改也是有问题的，每个数据包都有相应的`checksum`，直接修改以后就非常容易导致`checksum`不通过，因此提供了`bpf_skb_store_bytes`函数将修改后的`skb`写回，并且会自动修改`checksum`
+```
+SEC("classifier")
+int cls_main(struct __sk_buff *skb)
+{
+    void *data = (void *)(unsigned long long)skb->data;
+    void *data_end = (void *)(unsigned long long)skb->data_end;
+
+
+    /* load the first byte of the packet */
+    unsigned char *pkt_ptr = data;
+    unsigned char pkt = *pkt_ptr;
+
+
+    /* change the first byte to 'A' */
+    *pkt_ptr = 'A';
+
+
+    /* store the modified data back */
+    bpf_skb_store_bytes(skb, 0, &pkt, sizeof(pkt), 0);
+
+
+    return TC_ACT_OK;
+}
+```
+这儿要备注一下，因为这个函数会修改底层数据包，所以如果之前通过直接访问形式进行的判断，都需要重新走一遍才行，因为此时数据包已经变了
+
+
 
 
 # 参考资料
@@ -313,3 +476,8 @@ char *block = "block\x00";
 * [Why does my eBPF program contain an .rodata map? #592](https://github.com/cilium/ebpf/discussions/592)
 * [BPF 进阶笔记（四）：调试 BPF 程序](http://arthurchiao.art/blog/bpf-advanced-notes-4-zh/)
 * [How do I rewrite global variables before loading a BPF object?#795](https://github.com/cilium/ebpf/discussions/795)
+* [使用 eBPF 技术实现更快的网络数据包传输](https://atbug.com/accelerate-network-packets-transmission/)
+* [Linux 的可观测性 — 应急响应中的 eBPF 实践](https://kmahyyg.medium.com/linux-%E7%9A%84%E5%8F%AF%E8%A7%82%E6%B5%8B%E6%80%A7-%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E4%B8%AD%E7%9A%84-ebpf-%E5%AE%9E%E8%B7%B5-7c36f777a79e)
+* [Does Linux support setting XDP programs on the egress path?](https://stackoverflow.com/questions/75876282/does-linux-support-setting-xdp-programs-on-the-egress-path)
+* [万字干货，eBPF 经典入门指南](https://blog.csdn.net/lianhunqianr1/article/details/124977297)
+* [eBPF 之 ProgramType、AttachType和InputContext](https://blog.csdn.net/fengshenyun/article/details/129090600)
